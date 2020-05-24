@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MenuController } from '@ionic/angular';
-import { Menu } from '../../models.ts/menu';
+import { Menu } from '../../models/menu';
 
 @Component({
   selector: 'app-home',

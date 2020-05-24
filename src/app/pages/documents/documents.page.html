@@ -9,5 +9,24 @@
 </ion-header>
 
 <ion-content>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="danger" routerLink="/send-documents">
+      <ion-icon name="send-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+  <ion-card *ngFor="let document of documents">
+    <ion-card-header>
+      <ion-card-subtitle>{{document.type}}</ion-card-subtitle>
+      <ion-card-title>{{document.name}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <span>{{document.date}}</span>
+      <br>
+      <span>{{document.user}}</span>
+    </ion-card-content>
+      <ion-button color="success" size="small" expand="block"><ion-icon slot="icon-only" name="print-outline"></ion-icon>Imprimir</ion-button>
+      <ion-button color="warning" size="small" expand="block"><ion-icon slot="icon-only" name="arrow-down-circle"></ion-icon>Descargar</ion-button>
+  </ion-card>
 
 </ion-content>

@@ -15,6 +15,18 @@ const routes: Routes = [
     path: 'documents',
     loadChildren: () => import('./pages/documents/documents.module').then( m => m.DocumentsPageModule)
   },
+  {
+    path: 'requests',
+    loadChildren: () => import('./pages/requests/requests.module').then( m => m.RequestsPageModule)
+  },
+  {
+    path: 'operators',
+    loadChildren: () => import('./pages/operators/operators.module').then( m => m.OperatorsPageModule)
+  },
+  {
+    path: 'send-documents',
+    loadChildren: () => import('./pages/send-documents/send-documents.module').then( m => m.SendDocumentsPageModule)
+  },
 ];
 
 @NgModule({

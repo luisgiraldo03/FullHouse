@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Menu } from 'src/app/models.ts/menu';
+import { Menu } from 'src/app/models/menu';
 
 @Component({
   selector: 'app-menu',
@@ -18,6 +18,16 @@ export class MenuComponent implements OnInit {
       icon:'document-text',
       name:'Documentos',
       redirectTo:'/documents'
+    },
+    {
+      icon:'arrow-forward',
+      name:'Solicitudes',
+      redirectTo:'/requests'
+    },
+    {
+      icon:'desktop-outline',
+      name:'Solicitudes',
+      redirectTo:'/operators'
     }
   ]
 

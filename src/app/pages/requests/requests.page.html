@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button>
+      </ion-back-button>
+    </ion-buttons>
+    <ion-title>Solicitudes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let request of requests">
+    <ion-card-header>
+      <ion-card-subtitle>{{request.type}}</ion-card-subtitle>
+      <ion-card-title>{{request.documentRequest}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <span>{{request.date}}</span>
+      <br>
+      <span>{{request.origin}}</span>
+    </ion-card-content>
+      <ion-button color="success" size="small" expand="block"><ion-icon slot="icon-only" name="checkmark"></ion-icon>Aceptar</ion-button>
+      <ion-button color="warning" size="small" expand="block"><ion-icon slot="icon-only" name="trash-bin"></ion-icon>Rechazar</ion-button>
+  </ion-card>
+
+</ion-content>
