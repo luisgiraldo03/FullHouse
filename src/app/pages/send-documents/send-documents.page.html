@@ -9,6 +9,54 @@
 </ion-header>
 
 <ion-content>
-  
+  <ion-card>
+    <ion-card-header>
+      <ion-item>
+        <ion-label>Elije Operador</ion-label>
+        <ion-select placeholder="Selecciona uno">
+          <ion-select-option [value]="o.name" *ngFor="let o of operators">{{o.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-header>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Documentos</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row *ngFor="let d of documents">
+          <ion-col>
+            <div>{{d.name}}</div>
+          </ion-col>
+          <ion-col>
+            <div><ion-icon class="add" name="add-circle" (click)="addDocument(d.id)"></ion-icon></div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Documentos Añadidos</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row *ngFor="let d of documentsAdded">
+          <ion-col>
+            <div>{{d.name}}</div>
+          </ion-col>
+          <ion-col>
+            <div><ion-icon class="add" name="close-outline" (click)="leaveDocument(d.id)"></ion-icon></div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+    <ion-button color="success" expand="full">Enviar Documentos</ion-button>
+  </ion-card>
 
 </ion-content>

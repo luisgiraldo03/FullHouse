@@ -26,7 +26,7 @@ export class MenuComponent implements OnInit {
     },
     {
       icon:'desktop-outline',
-      name:'Solicitudes',
+      name:'Operadores',
       redirectTo:'/operators'
     }
   ]
