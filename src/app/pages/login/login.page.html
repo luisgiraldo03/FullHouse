@@ -5,5 +5,53 @@
 </ion-header>
 
 <ion-content>
+  <figure text-center padding>
+    <h1>Operador Full House</h1>
+  </figure>
 
+  <!-- FORM PARA EL EMAIL -->
+  <form [formGroup]="loginForm" (ngSubmit)="loginUser(loginForm.value)">
+    <ion-item>
+      <ion-label>Correo</ion-label>
+      <ion-input formControlName="email"></ion-input>
+    </ion-item>
+
+    <div class="validation-error">
+      <ng-container *ngFor="let validation of validationMessage.email">
+        <div
+          *ngIf="loginForm.get('email').hasError('validation.type') && (loginForm.get('email').dirty || loginForm.get('email').touched )"
+        >
+          {{validation.message}}
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- FORM PARA EL CORREO -->
+    <ion-item>
+      <ion-label>Password</ion-label>
+      <ion-input type="password" formControlName="password"></ion-input>
+    </ion-item>
+
+    <div class="validation-error">
+      <ng-container *ngFor="let validation of validationMessage.password">
+        <div
+          *ngIf="loginForm.get('password').hasError('validation.type') && 
+        (loginForm.get('password').dirty || loginForm.get('password').touched)"
+        >
+          {{validation.message}}
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- MENSAJE DE ERROR -->
+    {{errorMessage}}
+
+    <ion-button expand="full" shape="round" color="success" [disabled]="loginForm.invalid" type="submit"
+      >Iniciar Sesión</ion-button
+    >
+  </form>
+
+  <ion-button expand="full" shape="round" fill="outline" color="success">Click para registrar</ion-button>
 </ion-content>
+
+<ion-footer text-center (click)="goToRegister()"> </ion-footer>
