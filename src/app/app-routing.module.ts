@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'send-documents',
     loadChildren: () => import('./pages/send-documents/send-documents.module').then( m => m.SendDocumentsPageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
 ];
 
 @NgModule({
