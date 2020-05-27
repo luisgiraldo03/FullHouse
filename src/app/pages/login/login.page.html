@@ -19,7 +19,7 @@
     <div class="validation-error">
       <ng-container *ngFor="let validation of validationMessage.email">
         <div
-          *ngIf="loginForm.get('email').hasError('validation.type') && (loginForm.get('email').dirty || loginForm.get('email').touched)"
+          *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)"
         >
           {{validation.message}}
         </div>
@@ -35,7 +35,7 @@
     <div class="validation-error">
       <ng-container *ngFor="let validation of validationMessage.password">
         <div
-          *ngIf="loginForm.get('password').hasError('validation.type') && 
+          *ngIf="loginForm.get('password').hasError(validation.type) && 
         (loginForm.get('password').dirty || loginForm.get('password').touched)"
         >
           {{validation.message}}
@@ -51,7 +51,7 @@
     >
   </form>
 
-  <ion-button expand="full" shape="round" fill="outline" color="success">Registrate con nosotros</ion-button>
+  <ion-button (click)="goToRegister()" expand="full" shape="round" fill="outline" color="success"
+    >Registrate con nosotros</ion-button
+  >
 </ion-content>
-
-<ion-footer text-center (click)="goToRegister()"> </ion-footer>
