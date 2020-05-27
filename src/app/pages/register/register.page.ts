@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'; //FORMS DINAMICOS
 import { NavController } from '@ionic/angular';
 import { AuthenticationService } from 'src/app/services/authentication.service'; //AUTH SERVICE
-import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage'; //LOCAL STORAGE
+import { User } from '../../models/user'; //INTERFACES
+import { Operator } from '../../models/operator'; //INTERFACES
+import { CrudService } from '../../services/crud.service';
 
 @Component({
   selector: 'app-register',
@@ -15,6 +18,16 @@ export class RegisterPage implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
 
+  //DEFINIMOS EL USUARIO Y EL OPERADOR, DEBEMOS DE USAR UNA FABRICA PARA MEJORAR ESTO
+  user: User;
+  fullHouseOperator: Operator = {
+    id: 0,
+    name: 'Full House',
+    company: 'Full House',
+    bondingDate: '25/05/2020'
+  };
+
+  //MENSAJES PARA AVISAR QUE HAY UN ERROR EN LA CREACION
   validationMessages = {
     id: [
       { type: 'required', message: 'La cedula es requerida.' },
@@ -36,9 +49,13 @@ export class RegisterPage implements OnInit {
     private navCtrl: NavController,
     private authService: AuthenticationService,
     private formBuilder: FormBuilder,
-    private storage: Storage
-  ) {}
+    private storage: Storage,
+    private crud: CrudService
+  ) {
+    this.user = User.GetInstance(); //CREAMOS EL USUARIO LOCALMENTE
+  }
 
+  //INICIALIZAMOS LAS OPCIONES DE VALIDACION EN EL FORM
   ngOnInit() {
     this.validationForm = this.formBuilder.group({
       id: new FormControl(
@@ -55,8 +72,7 @@ export class RegisterPage implements OnInit {
 
   //RESGISTRAMOS AL USUARIO Y SI FUNCIONA LO LOGGEAMOS
   Register(credentials) {
-    //LE CREAMOS EL EMAIL AL USUARIO CON SU CEDULA
-    var _email = credentials.id + '@' + 'fullHouse.com';
+    var _email = credentials.id + '@' + 'fullHouse.com'; //LE CREAMOS EL EMAIL AL USUARIO CON SU CEDULA
     var newCredentials = {
       email: _email,
       password: credentials.password
@@ -70,12 +86,17 @@ export class RegisterPage implements OnInit {
         //LOGGEAMOS AL USUARIO LUEGO DE CREARLE LA CUENTA, CON SU EMAIL NUEVO Y CONTRASEÑA
         this.authService.loginUser(newCredentials).then(
           () => {
+            this.AddUserValues(credentials, newCredentials); //LE ACTUALIZAMOS LOS VAL AL USUARIO
+            var cedula = this.user.cedula;
+            this.user = { ...this.user }; //CONVERTIMOS AL USUARIO EN JSON PARA ENVIARLO A LA DB
+            this.crud.CreateUser(cedula, this.user);
             this.GoHomePage();
           },
           //ERRORES
           (eLogin) => {
             this.errorMessage = eLogin.message;
             this.successMessage = '';
+            this.validationForm.reset(); //RESETEAMOS EL FORM
           }
         );
       },
@@ -83,6 +104,7 @@ export class RegisterPage implements OnInit {
       (err) => {
         this.errorMessage = err.message;
         this.successMessage = '';
+        this.validationForm.reset(); //RESETEAMOS EL FORM
       }
     );
   }
@@ -90,7 +112,21 @@ export class RegisterPage implements OnInit {
   //ESPERAMOS A PONER EL VALOR EN EL LOCALSTORAGE Y AVANZAMOS
   //TIENE QUE SER ASYNC PARA QUE EL GUARD NO NOS DEVUELVA AL LOGIN
   async GoHomePage() {
-    const logUser = await this.storage.set('isUserLogged', true);
+    await this.storage.set('isUserLogged', true);
     this.navCtrl.navigateForward('/home');
+  }
+
+  //LE AGREGAMOS AL USUARIO LOS DATOS DE UN NUEVO USUARIO
+  AddUserValues(credentials, newCredentials) {
+    this.user.cedula = credentials.id;
+    this.user.name = credentials.name;
+    this.user.email = newCredentials.email;
+    this.user.password = newCredentials.password;
+    this.user.fingerPrint = '';
+    this.user.documents = null;
+    this.user.operators = null;
+    this.user.requests = null;
+    this.user.suscriptionType = 'normal';
+    this.user.bondedOperator = this.fullHouseOperator;
   }
 }

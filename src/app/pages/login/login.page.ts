@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 
 //SERVICIO DE AUTH
 import { AuthenticationService } from '../../services/authentication.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { AuthenticationService } from '../../services/authentication.service';
 export class LoginPage implements OnInit {
   loginForm: FormGroup;
   errorMessage: String = '';
+  user: User;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -50,16 +52,30 @@ export class LoginPage implements OnInit {
     this.authService.loginUser(credentials).then(
       (res) => {
         this.errorMessage = '';
-        this.storage.set('isUserLogged', true);
-        this.navCtrl.navigateForward('/home');
+        this.StartUserInstance(credentials);
+        this.GoToHome();
       },
       (err) => {
         this.errorMessage = err.message;
+        this.loginForm.reset(); //RESETEAMOS EL FORM
       }
     );
   }
 
   goToRegister() {
     this.navCtrl.navigateForward('/register');
+  }
+
+  //VAMOS AL HOME
+  async GoToHome() {
+    await this.storage.set('isUserLogged', true);
+    this.navCtrl.navigateForward('/home');
+  }
+
+  //CREAMOS EL SINGLETON DEL USUARIO Y LE AGREGAMOS LA CEDULA
+  StartUserInstance(credentials) {
+    this.user = User.GetInstance();
+    var cedula = credentials.email.substring(0, credentials.email.indexOf('@'));
+    this.user.cedula = cedula;
   }
 }
