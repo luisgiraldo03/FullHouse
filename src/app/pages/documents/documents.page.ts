@@ -1,50 +1,56 @@
 import { Component, OnInit } from '@angular/core';
 import { Document } from '../../models/document';
+import { CrudService } from 'src/app/services/crud.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-documents',
   templateUrl: './documents.page.html',
-  styleUrls: ['./documents.page.scss'],
+  styleUrls: ['./documents.page.scss']
 })
 export class DocumentsPage implements OnInit {
-
   public documents: Document[] = [
     {
-      id:1,
-      date:'20/12/2020',
+      id: 1,
+      date: '20/12/2020',
       name: 'Cédula de ciudadanía',
       procededEntity: 'Registraduría',
-      type:'Documento',
-      user:'Luis Giraldo'
+      type: 'Documento',
+      user: 'Luis Giraldo'
     },
     {
-      id:2,
-      date:'20/12/2020',
+      id: 2,
+      date: '20/12/2020',
       name: 'Registro civil',
       procededEntity: 'Registraduría',
-      type:'Documento',
-      user:'Luis Giraldo'
+      type: 'Documento',
+      user: 'Luis Giraldo'
     },
     {
-      id:3,
-      date:'20/12/2020',
+      id: 3,
+      date: '20/12/2020',
       name: 'Certificado de estudio',
       procededEntity: 'Universiad EAFIT',
-      type:'Documento',
-      user:'Luis Giraldo'
+      type: 'Documento',
+      user: 'Luis Giraldo'
     },
     {
-      id:4,
-      date:'20/12/2020',
+      id: 4,
+      date: '20/12/2020',
       name: 'Hoja de vida',
       procededEntity: 'Empresa de desarrollo',
-      type:'Documento',
-      user:'Luis Giraldo'
+      type: 'Documento',
+      user: 'Luis Giraldo'
     }
-  ]; 
+  ];
 
-  constructor() { }
+  user: User;
 
-  ngOnInit() {
+  constructor(private crud: CrudService) {
+    //CREAMOS EL SINGLETON Y LE PONEMOS UN OBSERVABLE PARA QUE SE ACTUALIZE CON LA DB SIEMPRE
+    this.user = User.GetInstance();
+    this.crud.SuscribeUser();
   }
+
+  ngOnInit() {}
 }

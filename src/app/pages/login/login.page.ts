@@ -47,7 +47,7 @@ export class LoginPage implements OnInit {
     ]
   };
 
-  // inventamos un servicio que hace las de backend
+  //AUNTEICAMOS AL USUARIO CON FIREBASE AUTH SERVICE
   loginUser(credentials) {
     this.authService.loginUser(credentials).then(
       (res) => {
@@ -62,20 +62,22 @@ export class LoginPage implements OnInit {
     );
   }
 
+  //VAMOS AL REGISTRO
   goToRegister() {
     this.navCtrl.navigateForward('/register');
   }
 
-  //VAMOS AL HOME
+  //VAMOS AL HOME LUEGO DE DESACTIVAR EL GUARD DE LOGGED
   async GoToHome() {
     await this.storage.set('isUserLogged', true);
     this.navCtrl.navigateForward('/home');
   }
 
-  //CREAMOS EL SINGLETON DEL USUARIO Y LE AGREGAMOS LA CEDULA
-  StartUserInstance(credentials) {
+  //CREAMOS EL SINGLETON DEL USUARIO Y LE AGREGAMOS LA CEDULA TANTO AL SINGLETON COMO AL LOCAL STORAGE
+  async StartUserInstance(credentials) {
     this.user = User.GetInstance();
     var cedula = credentials.email.substring(0, credentials.email.indexOf('@'));
+    await this.storage.set('UserCedula', cedula);
     this.user.cedula = cedula;
   }
 }

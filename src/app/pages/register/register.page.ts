@@ -51,9 +51,7 @@ export class RegisterPage implements OnInit {
     private formBuilder: FormBuilder,
     private storage: Storage,
     private crud: CrudService
-  ) {
-    this.user = User.GetInstance(); //CREAMOS EL USUARIO LOCALMENTE
-  }
+  ) {}
 
   //INICIALIZAMOS LAS OPCIONES DE VALIDACION EN EL FORM
   ngOnInit() {
@@ -81,16 +79,16 @@ export class RegisterPage implements OnInit {
     this.authService.registerUser(newCredentials).then(
       (res) => {
         this.errorMessage = '';
-        this.successMessage = 'Cuenta creada, espera mientras te loggeas.';
+        this.successMessage = 'Cuenta creada, espera mientras te loggeas...';
 
         //LOGGEAMOS AL USUARIO LUEGO DE CREARLE LA CUENTA, CON SU EMAIL NUEVO Y CONTRASEÑA
         this.authService.loginUser(newCredentials).then(
           () => {
             this.AddUserValues(credentials, newCredentials); //LE ACTUALIZAMOS LOS VAL AL USUARIO
+            this.SaveCedulaLocally(this.user.cedula);
             var cedula = this.user.cedula;
             this.user = { ...this.user }; //CONVERTIMOS AL USUARIO EN JSON PARA ENVIARLO A LA DB
-            this.crud.CreateUser(cedula, this.user);
-            this.GoHomePage();
+            this.CreateDBAndGoHomePage(cedula);
           },
           //ERRORES
           (eLogin) => {
@@ -111,13 +109,19 @@ export class RegisterPage implements OnInit {
 
   //ESPERAMOS A PONER EL VALOR EN EL LOCALSTORAGE Y AVANZAMOS
   //TIENE QUE SER ASYNC PARA QUE EL GUARD NO NOS DEVUELVA AL LOGIN
-  async GoHomePage() {
+  async CreateDBAndGoHomePage(cedula) {
     await this.storage.set('isUserLogged', true);
+    await this.crud.CreateUser(cedula, this.user);
     this.navCtrl.navigateForward('/home');
+  }
+
+  async SaveCedulaLocally(cedula) {
+    await this.storage.set('UserCedula', cedula);
   }
 
   //LE AGREGAMOS AL USUARIO LOS DATOS DE UN NUEVO USUARIO
   AddUserValues(credentials, newCredentials) {
+    this.user = User.GetInstance();
     this.user.cedula = credentials.id;
     this.user.name = credentials.name;
     this.user.email = newCredentials.email;

@@ -10,6 +10,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 export class AuthenticationService {
   constructor(private auth: AngularFireAuth) {}
 
+  //REGISTRAMOS USUARIO CON EMAIL Y CONTRASEÑA
   registerUser(credentials) {
     return new Promise<any>((resolve, reject) => {
       this.auth.createUserWithEmailAndPassword(credentials.email, credentials.password).then(
@@ -19,6 +20,7 @@ export class AuthenticationService {
     });
   }
 
+  //LOGGEAMOS AL USUARIO CON EMAIL Y CONTRASEÑA
   loginUser(credentials) {
     return new Promise<any>((resolve, reject) => {
       this.auth.signInWithEmailAndPassword(credentials.email, credentials.password).then(
