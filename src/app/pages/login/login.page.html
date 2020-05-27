@@ -19,7 +19,7 @@
     <div class="validation-error">
       <ng-container *ngFor="let validation of validationMessage.email">
         <div
-          *ngIf="loginForm.get('email').hasError('validation.type') && (loginForm.get('email').dirty || loginForm.get('email').touched )"
+          *ngIf="loginForm.get('email').hasError('validation.type') && ((loginForm.get('email').dirty || loginForm.get('email').touched))"
         >
           {{validation.message}}
         </div>
@@ -36,7 +36,7 @@
       <ng-container *ngFor="let validation of validationMessage.password">
         <div
           *ngIf="loginForm.get('password').hasError('validation.type') && 
-        (loginForm.get('password').dirty || loginForm.get('password').touched)"
+        ((loginForm.get('password').dirty || loginForm.get('password').touched))"
         >
           {{validation.message}}
         </div>

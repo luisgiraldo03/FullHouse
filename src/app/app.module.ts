@@ -10,6 +10,10 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ComponentModule } from './components/component.module';
 
+//BASE DE DATOS
+import { firebaseConfig } from '../environments/firebaseConfig';
+import { AngularFireModule } from '@angular/fire';
+
 //LOCAL STORAGE
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -22,12 +26,9 @@ import { IonicStorageModule } from '@ionic/storage';
     AppRoutingModule,
     ComponentModule,
     IonicStorageModule.forRoot(),
+    AngularFireModule.initializeApp(firebaseConfig) //INICIALIZAMOS LA BASE DE DATOS CON NUESTRA CONFIG
   ],
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-  ],
-  bootstrap: [AppComponent],
+  providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
