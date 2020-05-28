@@ -18,19 +18,17 @@ export class SendDocumentsPage implements OnInit {
   waitingMinTic: boolean = false;
   destinationOperator: string = 'null';
   successMessage: string = '';
+  _operador: string;
 
-  public operators: Operator[] = [
+  public gubernamentalEntitis = [
     {
-      id: 1,
-      company: 'Mintic',
-      name: 'MinCarpeta',
-      bondingDate: '03/06/2020'
+      name: 'EAFIT'
     },
     {
-      id: 1,
-      company: 'Gobernación',
-      name: 'govCarpeta',
-      bondingDate: '03/06/2020'
+      name: 'Min Tic'
+    },
+    {
+      name: 'MIN'
     }
   ];
 
@@ -118,6 +116,7 @@ export class SendDocumentsPage implements OnInit {
 
   //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC
   public SendDocument(entity) {
+    console.log(entity);
     //HALLAMOS EL NOMBRE DEL OPERADOR
     this.FindOperatorName(entity);
 

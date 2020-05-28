@@ -12,8 +12,8 @@
     <ion-card-header>
       <ion-item>
         <ion-label>Elije Operador</ion-label>
-        <ion-select placeholder="Selecciona uno">
-          <ion-select-option [value]="o.name" *ngFor="let o of operators">{{o.name}}</ion-select-option>
+        <ion-select [(ngModel)]="_operador" placeholder="Selecciona uno">
+          <ion-select-option [value]="o.name" *ngFor="let o of gubernamentalEntitis">{{o.name}}</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-card-header>
@@ -55,7 +55,7 @@
         </ion-row>
       </ion-grid>
     </ion-card-content>
-    <ion-button color="success" expand="full" (click)="SendDocument('MinTic')">Enviar Documentos</ion-button>
+    <ion-button color="success" expand="full" (click)="SendDocument(_operador)">Enviar Documentos</ion-button>
   </ion-card>
 
   <!-- CARD DONDE APARECE EL MENSAJE DE CONFIRMACION-->
