@@ -1,8 +1,9 @@
-export interface Document{
-    id?: number;
-    type?: string;
-    procededEntity?: string;
-    date?: string;
-    user?: string;
-    name?: string;
+export interface Document {
+  id?: number;
+  type?: string;
+  procededEntity?: string;
+  date?: string;
+  user?: string;
+  name?: string;
+  certificated?: boolean;
 }

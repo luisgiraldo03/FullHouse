@@ -18,8 +18,12 @@ export class CrudService {
 
   //LEEMOS LA INFORMACION Y NOS SUSCRIBIMOS A ESTA, OBSERVANDO CAMBIOS CON SNAPSHOTCHANGES
   //PARA ACTUALIZAR EN TIEMPO REAL
-  ReadUser(id: string) {
-    return this.fireStore.collection(this.collectionName).doc(id).snapshotChanges();
+  ReadUser(userID: string) {
+    return this.fireStore.collection(this.collectionName).doc(userID).snapshotChanges();
+  }
+
+  ReadDocs(userID: string) {
+    return this.fireStore.collection(this.collectionName).doc(userID).collection('documents').snapshotChanges();
   }
 
   //ACTUALIZAMOS EL USUARIO
@@ -27,17 +31,28 @@ export class CrudService {
     this.fireStore.doc(this.collectionName + '/' + userID).update(user);
   }
 
+  UploadDocument(userID: string, document) {
+    return this.fireStore
+      .collection(this.collectionName + '/' + userID + '/' + 'documents')
+      .doc(document.id + '')
+      .set(document);
+  }
+
   //BORRAMOS EL USUARIO
   DeleteUser(userID) {
     this.fireStore.doc(this.collectionName + '/' + userID).delete();
   }
 
-  //NOS SUSCRIBIMOS AL DOCUMENTO #CEDULA DEL USUARIO Y LE ACTUALIZAMOS CUALQUIER CAMBIO
+  //NOS SUSCRIBIMOS AL DOCUMENTO #CEDULA DEL USUARIO Y LE ACTUALIZAMOS CUALQUIER CAMBIO EN EL USUARIO O EN SUS DOCUMENTOS
   async SuscribeUser() {
     var user = User.GetInstance();
     var cedula = await this.storage.get('UserCedula');
     this.ReadUser(cedula).subscribe((data) => {
       user.UpdateVal(data);
+    });
+
+    this.ReadDocs(cedula).subscribe((docs) => {
+      user.UpdateDocs(docs);
     });
   }
 }

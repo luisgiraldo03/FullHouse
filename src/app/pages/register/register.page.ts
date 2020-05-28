@@ -127,7 +127,6 @@ export class RegisterPage implements OnInit {
     this.user.email = newCredentials.email;
     this.user.password = newCredentials.password;
     this.user.fingerPrint = '';
-    this.user.documents = null;
     this.user.operators = null;
     this.user.requests = null;
     this.user.suscriptionType = 'normal';

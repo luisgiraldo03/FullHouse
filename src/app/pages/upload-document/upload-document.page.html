@@ -1,0 +1,79 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Agregar documento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form class="form" [formGroup]="documentForm" (ngSubmit)="uploadDocument(documentForm.value)">
+    <ion-grid class="grid-upload-doc">
+      <ion-row>
+        <ion-card class="max-width">
+          <ion-card-header>
+            <ion-item>
+              <ion-label>Tipo de documento</ion-label>
+              <ion-select formControlName="_type" placeholder="Selecciona uno">
+                <ion-select-option [value]="t" *ngFor="let t of docType">{{t}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-card-header>
+        </ion-card>
+      </ion-row>
+
+      <ion-card>
+        <ion-card-header>
+          <ion-row>
+            <ion-item class="max-width">
+              <ion-label position="floating">Nombre</ion-label>
+              <ion-input type="text" formControlName="name"></ion-input>
+            </ion-item>
+
+            <div class="validation-error">
+              <ng-container *ngFor="let validation of validationMessage.name">
+                <div
+                  *ngIf="documentForm.get('name').hasError(validation.type) && (documentForm.get('name').dirty || documentForm.get('name').touched)"
+                >
+                  {{validation.message}}
+                </div>
+              </ng-container>
+            </div>
+          </ion-row>
+
+          <ion-row>
+            <ion-item class="max-width">
+              <ion-label position="floating">Procedencia</ion-label>
+              <ion-input type="text" formControlName="entity"></ion-input>
+            </ion-item>
+
+            <div class="validation-error">
+              <ng-container *ngFor="let validation of validationMessage.entity">
+                <div
+                  *ngIf="documentForm.get('entity').hasError(validation.type) && (documentForm.get('entity').dirty || documentForm.get('entity').touched)"
+                >
+                  {{validation.message}}
+                </div>
+              </ng-container>
+            </div>
+          </ion-row>
+        </ion-card-header>
+      </ion-card>
+
+      <ion-row>
+        {{errorMessage}} {{successMessage}}
+        <br />
+      </ion-row>
+    </ion-grid>
+    <ion-button
+      id="submitBtn"
+      expand="full"
+      shape="round"
+      color="success"
+      [disabled]="documentForm.invalid"
+      type="submit"
+      >Subir documento</ion-button
+    >
+  </form>
+</ion-content>

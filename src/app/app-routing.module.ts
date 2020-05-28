@@ -36,6 +36,10 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then((m) => m.RegisterPageModule)
+  },
+  {
+    path: 'upload-document',
+    loadChildren: () => import('./pages/upload-document/upload-document.module').then((m) => m.UploadDocumentPageModule)
   }
 ];
 

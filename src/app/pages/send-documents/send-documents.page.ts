@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Operator } from 'src/app/models/operator';
 import { Document } from '../../models/document';
+import { CrudService } from 'src/app/services/crud.service';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-send-documents',
   templateUrl: './send-documents.page.html',
-  styleUrls: ['./send-documents.page.scss'],
+  styleUrls: ['./send-documents.page.scss']
 })
 export class SendDocumentsPage implements OnInit {
-
-
   public documentsAdded: Document[] = [];
+  user: User;
+  documents: Document[];
   public operators: Operator[] = [
     {
       id: 1,
@@ -26,72 +28,73 @@ export class SendDocumentsPage implements OnInit {
     }
   ];
 
-  public documents: Document[] = [
-    {
-      id: 1,
-      date: '20/12/2020',
-      name: 'Cédula de ciudadanía',
-      procededEntity: 'Registraduría',
-      type: 'Documento',
-      user: 'Luis Giraldo'
-    },
-    {
-      id: 2,
-      date: '20/12/2020',
-      name: 'Registro civil',
-      procededEntity: 'Registraduría',
-      type: 'Documento',
-      user: 'Luis Giraldo'
-    },
-    {
-      id: 3,
-      date: '20/12/2020',
-      name: 'Certificado de estudio',
-      procededEntity: 'Universiad EAFIT',
-      type: 'Documento',
-      user: 'Luis Giraldo'
-    },
-    {
-      id: 4,
-      date: '20/12/2020',
-      name: 'Hoja de vida',
-      procededEntity: 'Empresa de desarrollo',
-      type: 'Documento',
-      user: 'Luis Giraldo'
-    }
-  ];
+  // public documents: Document[] = [
+  //   {
+  //     id: 1,
+  //     date: '20/12/2020',
+  //     name: 'Cédula de ciudadanía',
+  //     procededEntity: 'Registraduría',
+  //     type: 'Documento',
+  //     user: 'Luis Giraldo'
+  //   },
+  //   {
+  //     id: 2,
+  //     date: '20/12/2020',
+  //     name: 'Registro civil',
+  //     procededEntity: 'Registraduría',
+  //     type: 'Documento',
+  //     user: 'Luis Giraldo'
+  //   },
+  //   {
+  //     id: 3,
+  //     date: '20/12/2020',
+  //     name: 'Certificado de estudio',
+  //     procededEntity: 'Universiad EAFIT',
+  //     type: 'Documento',
+  //     user: 'Luis Giraldo'
+  //   },
+  //   {
+  //     id: 4,
+  //     date: '20/12/2020',
+  //     name: 'Hoja de vida',
+  //     procededEntity: 'Empresa de desarrollo',
+  //     type: 'Documento',
+  //     user: 'Luis Giraldo'
+  //   }
+  // ];
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private crud: CrudService) {
+    this.user = User.GetInstance();
+    this.crud.SuscribeUser();
+    this.documents = this.user.documents;
   }
 
+  ngOnInit() {}
+
   public addDocument(id: number, name: string) {
-    var name = this.documents.find(el => el.id === id).name;
+    var name = this.documents.find((el) => el.id === id).name;
     this.documentsAdded.push({
       id: id,
       name: name
     });
 
-    var el = this.documents.findIndex(_el => _el.id === id);
+    var el = this.documents.findIndex((_el) => _el.id === id);
     if (el > -1) {
       this.documents.splice(el, 1);
     }
     console.log(this.documentsAdded);
   }
 
-  public leaveDocument(id: number){
-    var name = this.documentsAdded.find(el => el.id === id).name;
+  public leaveDocument(id: number) {
+    var name = this.documentsAdded.find((el) => el.id === id).name;
     this.documents.push({
       id: id,
       name: name
     });
 
-    var el = this.documentsAdded.findIndex(_el => _el.id === id);
+    var el = this.documentsAdded.findIndex((_el) => _el.id === id);
     if (el > -1) {
       this.documentsAdded.splice(el, 1);
     }
   }
-  
-
 }
