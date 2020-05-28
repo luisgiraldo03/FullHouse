@@ -1,10 +1,17 @@
-h3{
-    float: left !important;
-    font-size: 18px;
+h3 {
+  float: left !important;
+  font-size: 18px;
 }
 
-.add{
-    width: 25px !important;
-    height: 25px !important;
-    margin-left: 50px !important;
+.add {
+  width: 25px !important;
+  height: 25px !important;
+  margin-left: 50px !important;
+}
+
+.successMessage {
+  color: black;
+  text-align: center;
+  margin: 15px;
+  font-size: 20px;
 }

@@ -1,8 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button>
-      </ion-back-button>
+      <ion-back-button> </ion-back-button>
     </ion-buttons>
     <ion-title>Enviar documentos</ion-title>
   </ion-toolbar>
@@ -13,8 +12,8 @@
     <ion-card-header>
       <ion-item>
         <ion-label>Elije Operador</ion-label>
-        <ion-select placeholder="Selecciona uno">
-          <ion-select-option [value]="o.name" *ngFor="let o of operators">{{o.name}}</ion-select-option>
+        <ion-select [(ngModel)]="_operador" placeholder="Selecciona uno">
+          <ion-select-option [value]="o.name" *ngFor="let o of gubernamentalEntitis">{{o.name}}</ion-select-option>
         </ion-select>
       </ion-item>
     </ion-card-header>
@@ -56,7 +55,13 @@
         </ion-row>
       </ion-grid>
     </ion-card-content>
-    <ion-button color="success" expand="full">Enviar Documentos</ion-button>
+    <ion-button color="success" expand="full" (click)="SendDocument(_operador)">Enviar Documentos</ion-button>
   </ion-card>
 
+  <!-- CARD DONDE APARECE EL MENSAJE DE CONFIRMACION-->
+  <ion-card *ngIf="successMessage != ''">
+    <ion-card-headder>
+      <h3 class="successMessage">{{successMessage}}</h3>
+    </ion-card-headder>
+  </ion-card>
 </ion-content>

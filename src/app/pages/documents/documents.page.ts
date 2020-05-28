@@ -54,7 +54,7 @@ export class DocumentsPage implements OnInit {
   constructor(private crud: CrudService) {
     //CREAMOS EL SINGLETON Y LE PONEMOS UN OBSERVABLE PARA QUE SE ACTUALIZE CON LA DB SIEMPRE
     this.user = User.GetInstance();
-    this.crud.SuscribeUser();
+    this.crud.SuscribeUser(); //OBSERVABLE
     this.documents = this.user.documents;
   }
 
