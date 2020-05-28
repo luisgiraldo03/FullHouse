@@ -3,6 +3,8 @@ import { Operator } from 'src/app/models/operator';
 import { Document } from '../../models/document';
 import { CrudService } from 'src/app/services/crud.service';
 import { User } from '../../models/user';
+import { MinTicService } from './../../services/min-tic.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-send-documents',
@@ -13,6 +15,10 @@ export class SendDocumentsPage implements OnInit {
   public documentsAdded: Document[] = [];
   user: User;
   documents: Document[];
+  waitingMinTic: boolean = false;
+  destinationOperator: string = 'null';
+  successMessage: string = '';
+
   public operators: Operator[] = [
     {
       id: 1,
@@ -63,7 +69,7 @@ export class SendDocumentsPage implements OnInit {
   //   }
   // ];
 
-  constructor(private crud: CrudService) {
+  constructor(private crud: CrudService, private minTic: MinTicService, private navCtrl: NavController) {
     this.user = User.GetInstance();
     this.crud.SuscribeUser();
     this.documents = this.user.documents;
@@ -71,11 +77,14 @@ export class SendDocumentsPage implements OnInit {
 
   ngOnInit() {}
 
-  public addDocument(id: number, name: string) {
-    var name = this.documents.find((el) => el.id === id).name;
+  public addDocument(id: number) {
+    var doc = this.documents.find((el) => el.id === id);
     this.documentsAdded.push({
       id: id,
-      name: name
+      name: doc.name,
+      procededEntity: doc.procededEntity,
+      type: doc.type,
+      user: doc.user
     });
 
     var el = this.documents.findIndex((_el) => _el.id === id);
@@ -86,15 +95,38 @@ export class SendDocumentsPage implements OnInit {
   }
 
   public leaveDocument(id: number) {
-    var name = this.documentsAdded.find((el) => el.id === id).name;
+    var doc = this.documentsAdded.find((el) => el.id === id);
     this.documents.push({
       id: id,
-      name: name
+      name: doc.name,
+      procededEntity: doc.procededEntity,
+      type: doc.type,
+      user: doc.user
     });
 
     var el = this.documentsAdded.findIndex((_el) => _el.id === id);
     if (el > -1) {
       this.documentsAdded.splice(el, 1);
+    }
+  }
+
+  //BUSCAMOS EL OPERADOR DE LA ENTIDAD A LA QUE ENVIAREMOS EL DOCUMENTO
+  //EL SERVICIO DE MIN TIC SE ENCARGARA DE ESTO
+  public FindOperatorName(entity) {
+    this.destinationOperator = this.minTic.SearchOperator(entity);
+  }
+
+  //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC
+  public SendDocument(entity) {
+    //HALLAMOS EL NOMBRE DEL OPERADOR
+    this.FindOperatorName(entity);
+
+    //ENVIAMOS EL DOC
+    if (this.destinationOperator != undefined) {
+      this.crud.SendDoc(this.documentsAdded, this.destinationOperator);
+      this.navCtrl.navigateBack('/documents');
+    } else {
+      this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }
   }
 }

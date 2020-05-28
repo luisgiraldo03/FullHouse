@@ -11,6 +11,8 @@ export class CrudService {
 
   constructor(private fireStore: AngularFirestore, private storage: Storage) {}
 
+  //------------------------CRUD DE NUESTRO OPERADOR --------------------------
+
   //CREAMOS UN USUARIO
   CreateUser(id: string, user) {
     return this.fireStore.collection(this.collectionName).doc(id).set(user);
@@ -54,5 +56,27 @@ export class CrudService {
     this.ReadDocs(cedula).subscribe((docs) => {
       user.UpdateDocs(docs);
     });
+  }
+
+  //ENVIAMOS UN DOCUMENTO A LA COLECCION DE DOCUMENTOS DE UN OPERADOR
+  SendDoc(doc, address) {
+    console.log(doc);
+    doc.forEach((element) => {
+      element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      element = { ...element };
+      this.fireStore
+        .collection('Operadores')
+        .doc(address)
+        .collection('documents')
+        .doc(element['id'] + '')
+        .set(element);
+    });
+  }
+
+  //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
+
+  //TOMAMOS TODOS LOS OPERADORES QUE HAY
+  QueryOperator() {
+    return this.fireStore.collection('Operadores').snapshotChanges();
   }
 }

@@ -62,7 +62,6 @@
       </ion-card>
 
       <ion-row>
-        {{errorMessage}} {{successMessage}}
         <br />
       </ion-row>
     </ion-grid>
@@ -76,4 +75,11 @@
       >Subir documento</ion-button
     >
   </form>
+
+  <!-- CARD DONDE APARECE EL MENSAJE DE CONFIRMACION-->
+  <ion-card *ngIf="successMessage != '' || errorMessage != ''">
+    <ion-card-headder>
+      <h3 class="successMessage">{{errorMessage}} {{successMessage}}</h3>
+    </ion-card-headder>
+  </ion-card>
 </ion-content>
