@@ -50,7 +50,8 @@ export class UploadDocumentPage implements OnInit {
       date: '20/12/2020',
       user: this.user.name,
       name: values.name,
-      certificated: false
+      certificated: false,
+      actualHolder: 'Full House'
     };
     this.newDocument = { ...this.newDocument };
     this.successMessage = 'Cargando documento...';

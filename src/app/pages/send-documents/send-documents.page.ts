@@ -122,6 +122,7 @@ export class SendDocumentsPage implements OnInit {
 
     //ENVIAMOS EL DOC
     if (this.destinationOperator != undefined) {
+      this.documentsAdded.forEach((x) => (x.actualHolder = entity));
       this.crud.SendDoc(this.documentsAdded, this.destinationOperator);
       this.navCtrl.navigateBack('/documents');
     } else {
