@@ -10,45 +10,6 @@ import { User } from 'src/app/models/user';
 })
 export class DocumentsPage implements OnInit {
   documents: Document[];
-  // public documents: Document[] = [
-  //   {
-  //     id: 1,
-  //     date: '20/12/2020',
-  //     name: 'Cédula de ciudadanía',
-  //     procededEntity: 'Registraduría',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo',
-  //     certificated: true
-  //   },
-  //   {
-  //     id: 2,
-  //     date: '20/12/2020',
-  //     name: 'Registro civil',
-  //     procededEntity: 'Registraduría',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo',
-  //     certificated: true
-  //   },
-  //   {
-  //     id: 3,
-  //     date: '20/12/2020',
-  //     name: 'Certificado de estudio',
-  //     procededEntity: 'Universiad EAFIT',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo',
-  //     certificated: true
-  //   },
-  //   {
-  //     id: 4,
-  //     date: '20/12/2020',
-  //     name: 'Hoja de vida',
-  //     procededEntity: 'Empresa de desarrollo',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo',
-  //     certificated: false
-  //   }
-  // ];
-
   user: User;
 
   constructor(private crud: CrudService) {

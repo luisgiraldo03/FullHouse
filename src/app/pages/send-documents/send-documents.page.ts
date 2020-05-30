@@ -67,7 +67,6 @@ export class SendDocumentsPage implements OnInit {
     if (el > -1) {
       this.documents.splice(el, 1);
     }
-    console.log(this.documentsAdded);
   }
 
   //BORRAMOS DOCUMENTOS DE LOS QUE IBAMOS A ENVIAR

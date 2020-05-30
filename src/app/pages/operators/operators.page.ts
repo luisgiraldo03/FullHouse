@@ -137,7 +137,8 @@ export class OperatorsPage implements OnInit {
       procededEntity: doc.procededEntity,
       type: doc.type,
       user: doc.user,
-      date: doc.date
+      date: doc.date,
+      certificated: true
     });
 
     var el = this.documentsAdded.findIndex((_el) => _el.id === id);

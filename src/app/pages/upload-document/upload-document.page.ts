@@ -57,6 +57,6 @@ export class UploadDocumentPage implements OnInit {
     this.successMessage = 'Cargando documento...';
     await this.crud.UploadDocument(this.user.cedula, this.newDocument);
     this.successMessage = 'Documento subido';
-    this.navCtrl.navigateBack('/documents');
+    this.navCtrl.navigateBack('/home');
   }
 }
