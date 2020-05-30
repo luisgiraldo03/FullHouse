@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore'; //BASE DE DATOS
 import { Storage } from '@ionic/storage'; //LOCAL STORAGE
 import { User } from '../models/user';
-import * as firebase from 'firebase/app';
+import * as firebase from 'firebase/app'; //IMPORTAMOS ESTO PARA MODIFICAR ARREGLOS EN FIRESTORE, ACA TRAEMOS TODO FIREBASE, ( CORREGIR PARA OPTIMIZAR)
 
 @Injectable({
   providedIn: 'root'
@@ -32,8 +32,14 @@ export class CrudService {
     return this.fireStore.collection(this.collectionName).doc(userID).snapshotChanges();
   }
 
+  //LEEMOS LOS DOCUMENTOS DEL USUARIO, SE HACE POR APARETE POR QUE VAN EN UN DOC SEPARADO EN FIRESTORE
   ReadDocs(userID: string) {
     return this.fireStore.collection(this.collectionName).doc(userID).collection('documents').snapshotChanges();
+  }
+
+  //LEEMOS LAS SOLICITUDES DEL USUARIO, SE HACE POR APARTE POR QUE VAN EN UN DOC SEPARADO EN FIRESTORE
+  ReadRequests(userID: string) {
+    return this.fireStore.collection(this.collectionName).doc(userID).collection('requests').snapshotChanges();
   }
 
   //ACTUALIZAMOS EL USUARIO
@@ -64,6 +70,10 @@ export class CrudService {
     this.ReadDocs(cedula).subscribe((docs) => {
       user.UpdateDocs(docs);
     });
+
+    this.ReadRequests(cedula).subscribe((docs) => {
+      user.UpdateRequests(docs);
+    });
   }
 
   //ENVIAMOS UN DOCUMENTO A LA COLECCION DE DOCUMENTOS DE UN OPERADOR
@@ -88,7 +98,7 @@ export class CrudService {
         this.fireStore
           .collection('Usuarios')
           .doc(_email)
-          .collection('requests')
+          .collection('documents')
           .doc(element['id'] + '')
           .set(element);
       });

@@ -1,8 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button>
-      </ion-back-button>
+      <ion-back-button> </ion-back-button>
     </ion-buttons>
     <ion-title>Solicitudes</ion-title>
   </ion-toolbar>
@@ -17,11 +16,14 @@
 
     <ion-card-content>
       <span>{{request.date}}</span>
-      <br>
+      <br />
       <span>{{request.origin}}</span>
     </ion-card-content>
-      <ion-button color="success" size="small" expand="block"><ion-icon slot="icon-only" name="checkmark"></ion-icon>Aceptar</ion-button>
-      <ion-button color="warning" size="small" expand="block"><ion-icon slot="icon-only" name="trash-bin"></ion-icon>Rechazar</ion-button>
+    <ion-button color="success" size="small" expand="block" (click)="Accept(request)"
+      ><ion-icon slot="icon-only" name="checkmark"></ion-icon>Aceptar, clickea 2 veces</ion-button
+    >
+    <ion-button color="warning" size="small" expand="block"
+      ><ion-icon slot="icon-only" name="trash-bin"></ion-icon>Rechazar</ion-button
+    >
   </ion-card>
-
 </ion-content>
