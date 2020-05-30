@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CrudService } from './crud.service';
+import { element } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,14 @@ export class MinTicService {
   //BUSCAMOS EL OPERADOR QUE CONCUERDA CON LA ENTIDAD QUE ENVIAMOS
   public SearchOperator(entidad: string) {
     if (this.searching == false) {
+      //si nos envian un correo, cambiamos el valor para que sea solo el comienzo del correo ( cedula )
+      if (entidad.includes('@') && entidad.includes('.')) {
+        entidad = entidad.substring(0, entidad.indexOf('@'));
+      }
+
       this.searching = true;
       var allOperators = [];
+
       //recibimos un arreglo con todos los operadores y las entidades que tienen ( sus usuarios )
       this.crud.QueryOperator().forEach((data) => {
         //los pasamos a un arreglo local
@@ -23,10 +30,11 @@ export class MinTicService {
             name: e.payload.doc.data()['name']
           };
         });
-        //buscamos el operador que contenga la entidad que buscamos
+
+        //buscamos que operador tiene la entidad que buscamos
         allOperators = allOperators.find((d) => {
-          for (var [key, value] of Object.entries(d.users)) {
-            if (key == entidad) return this;
+          for (var i = 0; i < d.users.length; i++) {
+            if (entidad == d.users[i]) return this;
           }
         });
 

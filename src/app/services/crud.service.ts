@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore'; //BASE DE DATOS
 import { Storage } from '@ionic/storage'; //LOCAL STORAGE
 import { User } from '../models/user';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,13 @@ export class CrudService {
 
   //CREAMOS UN USUARIO
   CreateUser(id: string, user) {
+    //PONEMOS LA REFERENCIA DE QUE TENEMOS EL USUARIO EN LA BASE DE DATOS DEL MIN TIC
+    var FullHouse = this.fireStore.collection('Operadores').doc('FullHouse');
+    FullHouse.update({
+      Users: firebase.firestore.FieldValue.arrayUnion(id)
+    });
+
+    //CREAMOS EL USUARIO EN NUESTRA BASE DE DATOS LOCAL
     return this.fireStore.collection(this.collectionName).doc(id).set(user);
   }
 
@@ -59,18 +67,32 @@ export class CrudService {
   }
 
   //ENVIAMOS UN DOCUMENTO A LA COLECCION DE DOCUMENTOS DE UN OPERADOR
-  SendDoc(doc, address) {
-    console.log(doc);
-    doc.forEach((element) => {
-      element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-      element = { ...element };
-      this.fireStore
-        .collection('Operadores')
-        .doc(address)
-        .collection('documents')
-        .doc(element['id'] + '')
-        .set(element);
-    });
+  SendDoc(doc, address, email?) {
+    if (address != 'FullHouse') {
+      console.log(doc);
+      doc.forEach((element) => {
+        element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        element = { ...element };
+        this.fireStore
+          .collection('Operadores')
+          .doc(address)
+          .collection('documents')
+          .doc(element['id'] + '')
+          .set(element);
+      });
+    } else {
+      var _email = email.substring(0, email.indexOf('@'));
+      doc.forEach((element) => {
+        element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+        element = { ...element };
+        this.fireStore
+          .collection('Usuarios')
+          .doc(_email)
+          .collection('requests')
+          .doc(element['id'] + '')
+          .set(element);
+      });
+    }
   }
 
   //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
@@ -78,5 +100,10 @@ export class CrudService {
   //TOMAMOS TODOS LOS OPERADORES QUE HAY
   QueryOperator() {
     return this.fireStore.collection('Operadores').snapshotChanges();
+  }
+
+  //NOS SUSCRIBIMOS A UNOS DOCUMENTOS DADO UNA ENTIDAD
+  GetOperatorDocs(operator) {
+    return this.fireStore.collection('Operadores').doc(operator).collection('documents').snapshotChanges();
   }
 }

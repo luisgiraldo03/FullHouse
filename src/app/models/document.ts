@@ -6,4 +6,5 @@ export interface Document {
   user?: string;
   name?: string;
   certificated?: boolean;
+  actualHolder?: string;
 }

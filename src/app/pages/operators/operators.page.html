@@ -1,24 +1,85 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button>
-      </ion-back-button>
+      <ion-back-button> </ion-back-button>
     </ion-buttons>
-    <ion-title>Operadores</ion-title>
+    <ion-title>Pagina otros operadores</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-card *ngFor="let operator of operators">
-    <ion-card-header>
-      <ion-card-subtitle>{{operator.company}}</ion-card-subtitle>
-      <ion-card-title>{{operator.name}}</ion-card-title>
-    </ion-card-header>
+  <form class="form" [formGroup]="sendDocForm" (ngSubmit)="SendDocuments(sendDocForm.value)">
+    <ion-card>
+      <ion-card-header>
+        <ion-item>
+          <ion-label>Operadores</ion-label>
+          <ion-select
+            formControlName="operator"
+            [(ngModel)]="searchOperator"
+            placeholder="Selecciona uno"
+            (ionChange)="onChange($event)"
+          >
+            <ion-select-option [value]="o.name" *ngFor="let o of operators">{{o.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-header>
+    </ion-card>
 
-    <ion-card-content>
-      <span>Fecha de vinculación: {{operator.bondingDate}}</span>
-    </ion-card-content>
-      <ion-button color="danger" size="small" expand="block"><ion-icon slot="icon-only" name="close-outline"></ion-icon>Desvincular</ion-button>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Documentos</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-grid>
+          <ion-row *ngFor="let d of documents">
+            <ion-col size="8">
+              <div>{{d.name}} - {{d.actualHolder}}</div>
+            </ion-col>
+            <ion-col size="4">
+              <div><ion-icon class="add" name="add-circle" (click)="addDocument(d.id)"></ion-icon></div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Documentos Añadidos</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-grid>
+          <ion-row *ngFor="let d of documentsAdded">
+            <ion-col>
+              <div>{{d.name}}</div>
+            </ion-col>
+            <ion-col>
+              <div><ion-icon class="add" name="close-outline" (click)="leaveDocument(d.id)"></ion-icon></div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <h1>Enviar Documentos</h1>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-input formControlName="email" type="text" placeholder="Correo usuario objetivo"></ion-input>
+        <br />
+        <ion-button color="success" expand="full" [disabled]="sendDocForm.invalid" type="submit">Enviar</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </form>
+
+  <!-- CARD DONDE APARECE EL MENSAJE DE CONFIRMACION-->
+  <ion-card *ngIf="successMessage != ''">
+    <ion-card-headder>
+      <h3 class="successMessage">{{successMessage}}</h3>
+    </ion-card-headder>
   </ion-card>
-
 </ion-content>
