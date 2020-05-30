@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Operator } from 'src/app/models/operator';
 import { Document } from '../../models/document';
 import { CrudService } from 'src/app/services/crud.service';
 import { User } from '../../models/user';
 import { MinTicService } from './../../services/min-tic.service';
 import { NavController } from '@ionic/angular';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-send-documents',
@@ -12,69 +12,47 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./send-documents.page.scss']
 })
 export class SendDocumentsPage implements OnInit {
-  public documentsAdded: Document[] = [];
+  public documentsAdded: Document[] = []; //DOCS A ENVIAR
   user: User;
-  documents: Document[];
-  waitingMinTic: boolean = false;
-  destinationOperator: string = 'null';
+  documents: Document[]; // DOCS ACTUALES
+  waitingMinTic: boolean = false; // PARA SABER SI ESTAMOS REALIZANDO UNA BUSQUEDA EN EL MIN TIC
+  destinationOperator: string = 'null'; //PARA SABER A QUE OPERADOR ENVIAREMOS LOS DOCS
   successMessage: string = '';
-  _operador: string;
+  _operador: string; // AQUI GUARDAREMOS LA ENTIDAD DESTINO EN EL HTML
+  sendDocForm: FormGroup;
 
+  //ENTIDADES LAS CUALES ESTAN DISPONIBLES PARA ENVIAR DOCS
   public gubernamentalEntitis = [
     {
       name: 'EAFIT'
     },
     {
-      name: 'Min Tic'
+      name: 'MinTic'
     },
     {
       name: 'MIN'
     }
   ];
 
-  // public documents: Document[] = [
-  //   {
-  //     id: 1,
-  //     date: '20/12/2020',
-  //     name: 'Cédula de ciudadanía',
-  //     procededEntity: 'Registraduría',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo'
-  //   },
-  //   {
-  //     id: 2,
-  //     date: '20/12/2020',
-  //     name: 'Registro civil',
-  //     procededEntity: 'Registraduría',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo'
-  //   },
-  //   {
-  //     id: 3,
-  //     date: '20/12/2020',
-  //     name: 'Certificado de estudio',
-  //     procededEntity: 'Universiad EAFIT',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo'
-  //   },
-  //   {
-  //     id: 4,
-  //     date: '20/12/2020',
-  //     name: 'Hoja de vida',
-  //     procededEntity: 'Empresa de desarrollo',
-  //     type: 'Documento',
-  //     user: 'Luis Giraldo'
-  //   }
-  // ];
-
-  constructor(private crud: CrudService, private minTic: MinTicService, private navCtrl: NavController) {
+  constructor(
+    private crud: CrudService,
+    private minTic: MinTicService,
+    private navCtrl: NavController,
+    private formBuilder: FormBuilder
+  ) {
     this.user = User.GetInstance();
     this.crud.SuscribeUser();
     this.documents = this.user.documents;
   }
 
-  ngOnInit() {}
+  //ACTIVAMOS EL FORM
+  ngOnInit() {
+    this.sendDocForm = this.formBuilder.group({
+      entity: new FormControl('', Validators.compose([Validators.required]))
+    });
+  }
 
+  //AÑADIMOS DOCUMENTOS PARA ENVIAR
   public addDocument(id: number) {
     var doc = this.documents.find((el) => el.id === id);
     this.documentsAdded.push({
@@ -92,6 +70,7 @@ export class SendDocumentsPage implements OnInit {
     console.log(this.documentsAdded);
   }
 
+  //BORRAMOS DOCUMENTOS DE LOS QUE IBAMOS A ENVIAR
   public leaveDocument(id: number) {
     var doc = this.documentsAdded.find((el) => el.id === id);
     this.documents.push({
@@ -115,8 +94,8 @@ export class SendDocumentsPage implements OnInit {
   }
 
   //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC
-  public SendDocument(entity) {
-    console.log(entity);
+  public SendDocument(data) {
+    var entity = data.entity;
     //HALLAMOS EL NOMBRE DEL OPERADOR
     this.FindOperatorName(entity);
 

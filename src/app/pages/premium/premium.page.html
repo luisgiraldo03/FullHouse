@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
+    <ion-title>Operadores</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngFor="let operator of operators">
+    <ion-card-header>
+      <ion-card-subtitle>{{operator.company}}</ion-card-subtitle>
+      <ion-card-title>{{operator.name}}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <span>Fecha de vinculación: {{operator.bondingDate}}</span>
+    </ion-card-content>
+    <ion-button color="danger" size="small" expand="block"
+      ><ion-icon slot="icon-only" name="close-outline"></ion-icon>Desvincular</ion-button
+    >
+  </ion-card>
+</ion-content>

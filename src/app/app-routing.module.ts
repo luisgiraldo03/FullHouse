@@ -40,6 +40,10 @@ const routes: Routes = [
   {
     path: 'upload-document',
     loadChildren: () => import('./pages/upload-document/upload-document.module').then((m) => m.UploadDocumentPageModule)
+  },
+  {
+    path: 'premium',
+    loadChildren: () => import('./pages/premium/premium.module').then( m => m.PremiumPageModule)
   }
 ];
 
