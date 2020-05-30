@@ -45,7 +45,7 @@ export class RequestsPage implements OnInit {
     var docToSend = [];
     this.destinationOperator = this.minTic.SearchOperator(request.origin);
     docs.forEach((doc) => {
-      if (doc.name == request.documentRequest) {
+      if (doc.name.toUpperCase().split('').join('') == request.documentRequest.toUpperCase().split('').join('')) {
         if (doc.type.includes(request.type)) {
           docToSend.push(doc);
           return;

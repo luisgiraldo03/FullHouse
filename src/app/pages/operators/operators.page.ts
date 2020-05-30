@@ -4,6 +4,7 @@ import { CrudService } from 'src/app/services/crud.service';
 import { MinTicService } from './../../services/min-tic.service';
 import { NavController } from '@ionic/angular';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { Request } from '../../models/request';
 
 @Component({
   selector: 'app-operators',
@@ -12,14 +13,16 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 })
 export class OperatorsPage implements OnInit {
   public documentsAdded: Document[] = []; //DOCS A ENVIAR
+  requests: Request;
   documents: Document[]; // DOCS ACTUALES
   waitingMinTic: boolean = false; // PARA SABER SI ESTAMOS REALIZANDO UNA BUSQUEDA EN EL MIN TIC
   destinationOperator: string = 'null'; //PARA SABER A QUE OPERADOR ENVIAREMOS LOS DOCS
   successMessage: string = '';
   searchOperator: string; // AQUI GUARDAREMOS LA ENTIDAD ACTUAL EN EL HTML
   sendDocForm: FormGroup;
+  sendRequests: FormGroup;
 
-  //POSIBLES OPCIONES DE ENTIDADES
+  //POSIBLES OPCIONES DE OPERADORES
   public operators = [
     {
       name: 'GovCarpeta'
@@ -29,6 +32,35 @@ export class OperatorsPage implements OnInit {
     },
     {
       name: 'TicCarpeta'
+    }
+  ];
+
+  //POSIBLES OPCIONES DE ENTIDADES
+  public entity = [
+    {
+      name: 'EAFIT'
+    },
+    {
+      name: 'MinTic'
+    },
+    {
+      name: 'MIN'
+    }
+  ];
+
+  //TIPOS DE REQUEST
+  public requestTypes = [
+    {
+      name: 'certificado'
+    },
+    {
+      name: 'extracto bancario'
+    },
+    {
+      name: 'documento'
+    },
+    {
+      name: 'identidad'
     }
   ];
 
@@ -47,6 +79,16 @@ export class OperatorsPage implements OnInit {
         Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])
       ),
       operator: new FormControl('', Validators.compose([Validators.required]))
+    });
+
+    this.sendRequests = this.formBuilder.group({
+      email: new FormControl(
+        '',
+        Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])
+      ),
+      requestType: new FormControl('', Validators.compose([Validators.required])),
+      entity: new FormControl('', Validators.compose([Validators.required])),
+      docReq: new FormControl('', Validators.compose([Validators.required]))
     });
   }
 
@@ -94,7 +136,8 @@ export class OperatorsPage implements OnInit {
       name: doc.name,
       procededEntity: doc.procededEntity,
       type: doc.type,
-      user: doc.user
+      user: doc.user,
+      date: doc.date
     });
 
     var el = this.documentsAdded.findIndex((_el) => _el.id === id);
@@ -113,12 +156,27 @@ export class OperatorsPage implements OnInit {
       if (this.destinationOperator != undefined) {
         this.documentsAdded.forEach((x) => (x.actualHolder = data.email));
         this.crud.SendDoc(this.documentsAdded, this.destinationOperator, data.email);
-        this.navCtrl.navigateBack('/documents');
+        this.navCtrl.navigateBack('/home');
       } else {
         this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
       }
     }
+  }
 
-    //this.crud.Test();
+  SendRequests(data) {
+    this.destinationOperator = this.minTic.SearchOperator(data.email);
+    this.requests = {
+      id: 0,
+      type: data.requestType,
+      origin: data.entity,
+      documentRequest: data.docReq,
+      date: '20/05/1996'
+    };
+    if (this.destinationOperator != undefined) {
+      this.crud.SendRequests(this.requests, this.destinationOperator, data.email);
+      this.navCtrl.navigateBack('/home');
+    } else {
+      this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
+    }
   }
 }

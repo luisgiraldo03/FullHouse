@@ -76,6 +76,36 @@
     </ion-card>
   </form>
 
+  <form class="form" [formGroup]="sendRequests" (ngSubmit)="SendRequests(sendRequests.value)">
+    <ion-card>
+      <ion-card-header>
+        <ion-item>
+          <ion-label>Entidad</ion-label>
+          <ion-select formControlName="entity" placeholder="Selecciona uno">
+            <ion-select-option [value]="e.name" *ngFor="let e of entity">{{e.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Solicitud de documento</ion-label>
+          <ion-select formControlName="requestType" placeholder="Selecciona uno">
+            <ion-select-option [value]="rt.name" *ngFor="let rt of requestTypes">{{rt.name}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-input
+          formControlName="docReq"
+          type="text"
+          placeholder="Documento Requerido, ( solo el nombre del doc )"
+        ></ion-input>
+        <ion-input formControlName="email" type="text" placeholder="Correo usuario objetivo"></ion-input>
+        <br />
+        <ion-button color="success" expand="full" [disabled]="sendRequests.invalid" type="submit">Solicitar</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </form>
+
   <!-- CARD DONDE APARECE EL MENSAJE DE CONFIRMACION-->
   <ion-card *ngIf="successMessage != ''">
     <ion-card-headder>

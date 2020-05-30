@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { CrudService } from './crud.service';
-import { element } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +17,8 @@ export class MinTicService {
         entidad = entidad.substring(0, entidad.indexOf('@'));
       }
 
+      console.log(entidad);
+
       this.searching = true;
       var allOperators = [];
 
@@ -31,15 +32,16 @@ export class MinTicService {
           };
         });
 
+        console.log(allOperators);
         //buscamos que operador tiene la entidad que buscamos
         allOperators = allOperators.find((d) => {
           for (var i = 0; i < d.users.length; i++) {
-            if (entidad == d.users[i]) return this;
+            if (entidad.toUpperCase().split('').join('') == d.users[i].toUpperCase().split('').join('')) return this;
           }
         });
-
         //la asignamos como la que necesitamos
         this.Operator = allOperators['name'];
+        console.log(this.Operator);
       });
     }
 

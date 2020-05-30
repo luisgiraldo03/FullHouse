@@ -79,7 +79,6 @@ export class CrudService {
   //ENVIAMOS UN DOCUMENTO A LA COLECCION DE DOCUMENTOS DE UN OPERADOR
   SendDoc(doc, address, email?) {
     if (address != 'FullHouse') {
-      console.log(doc);
       doc.forEach((element) => {
         element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         element = { ...element };
@@ -115,5 +114,30 @@ export class CrudService {
   //NOS SUSCRIBIMOS A UNOS DOCUMENTOS DADO UNA ENTIDAD
   GetOperatorDocs(operator) {
     return this.fireStore.collection('Operadores').doc(operator).collection('documents').snapshotChanges();
+  }
+
+  SendRequests(requests, address, email?) {
+    if (address != 'FullHouse') {
+      console.log(requests);
+      requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      requests = { ...requests };
+      this.fireStore
+        .collection('Operadores')
+        .doc(address)
+        .collection('requests')
+        .doc(requests['id'] + '')
+        .set(requests);
+    } else {
+      var _email = email.substring(0, email.indexOf('@'));
+      requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      console.log(requests);
+      requests = { ...requests };
+      this.fireStore
+        .collection('Usuarios')
+        .doc(_email)
+        .collection('requests')
+        .doc(requests['id'] + '')
+        .set(requests);
+    }
   }
 }

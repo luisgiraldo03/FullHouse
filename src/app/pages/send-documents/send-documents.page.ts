@@ -103,7 +103,7 @@ export class SendDocumentsPage implements OnInit {
     if (this.destinationOperator != undefined) {
       this.documentsAdded.forEach((x) => (x.actualHolder = entity));
       this.crud.SendDoc(this.documentsAdded, this.destinationOperator);
-      this.navCtrl.navigateBack('/documents');
+      this.navCtrl.navigateBack('/home');
     } else {
       this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }
