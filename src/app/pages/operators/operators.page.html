@@ -13,12 +13,7 @@
       <ion-card-header>
         <ion-item>
           <ion-label>Operadores</ion-label>
-          <ion-select
-            formControlName="operator"
-            [(ngModel)]="searchOperator"
-            placeholder="Selecciona uno"
-            (ionChange)="onChange($event)"
-          >
+          <ion-select formControlName="operator" placeholder="Selecciona uno" (ionChange)="onChange($event)">
             <ion-select-option [value]="o.name" *ngFor="let o of operators">{{o.name}}</ion-select-option>
           </ion-select>
         </ion-item>
