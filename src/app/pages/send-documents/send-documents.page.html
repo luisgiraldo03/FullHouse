@@ -67,5 +67,21 @@
     <ion-card-header>
       <h3 class="successMessage">{{successMessage}}</h3>
     </ion-card-header>
+<<<<<<< HEAD
+=======
+    <ion-card-content>
+      <ion-grid>
+        <ion-row *ngFor="let d of documentsAdded">
+          <ion-col>
+            <div>{{d.name}}</div>
+          </ion-col>
+          <ion-col>
+            <div><ion-icon class="add" name="close-outline" (click)="leaveDocument(d.id)"></ion-icon></div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+    <ion-button color="success" expand="full">Enviar Documentos</ion-button>
+>>>>>>> feature/otros
   </ion-card>
 </ion-content>
