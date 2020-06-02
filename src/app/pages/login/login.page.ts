@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { NavController, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
 
 //SERVICIO DE AUTH
 import { AuthenticationService } from '../../services/authentication.service';
 import { User } from 'src/app/models/user';
+
 
 @Component({
   selector: 'app-login',
@@ -21,8 +23,9 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     private navCtrl: NavController,
     private storage: Storage,
-    private authService: AuthenticationService
-  ) {}
+    private authService: AuthenticationService,
+    private faio: FingerprintAIO
+  ) { }
 
   ngOnInit() {
     // EL FORM SE USARA PARA VALIDAR CON COLORES MIENTRAS EL USUARIO ESCRIBE
@@ -60,6 +63,17 @@ export class LoginPage implements OnInit {
         this.loginForm.reset(); //RESETEAMOS EL FORM
       }
     );
+  }
+
+  public loginFinger() {
+    this.faio.show({
+      description: 'autenticando...'
+    })
+      .then((user: User) => {
+        this.GoToHome();
+        this.user.fingerPrint = user
+      })
+      .catch((error: any) => console.log(error));
   }
 
   //VAMOS AL REGISTRO

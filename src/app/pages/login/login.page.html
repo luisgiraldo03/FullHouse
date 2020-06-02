@@ -19,8 +19,7 @@
     <div class="validation-error">
       <ng-container *ngFor="let validation of validationMessage.email">
         <div
-          *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)"
-        >
+          *ngIf="loginForm.get('email').hasError(validation.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
           {{validation.message}}
         </div>
       </ng-container>
@@ -34,10 +33,8 @@
 
     <div class="validation-error">
       <ng-container *ngFor="let validation of validationMessage.password">
-        <div
-          *ngIf="loginForm.get('password').hasError(validation.type) && 
-        (loginForm.get('password').dirty || loginForm.get('password').touched)"
-        >
+        <div *ngIf="loginForm.get('password').hasError(validation.type) && 
+        (loginForm.get('password').dirty || loginForm.get('password').touched)">
           {{validation.message}}
         </div>
       </ng-container>
@@ -46,12 +43,14 @@
     <!-- MENSAJE DE ERROR -->
     {{errorMessage}}
 
-    <ion-button expand="full" shape="round" color="success" [disabled]="loginForm.invalid" type="submit"
-      >Iniciar Sesión</ion-button
-    >
+      <div class="container-finger">
+        <img buttton src="../../../assets/finger.png" class="lock-img" alt="" (click)="loginFinger()">
+      </div>
+
+    <ion-button expand="full" shape="round" color="success" [disabled]="loginForm.invalid" type="submit">Iniciar Sesión
+    </ion-button>
   </form>
   <br />
-  <ion-button (click)="goToRegister()" expand="full" shape="round" fill="outline" color="success"
-    >Registrate con nosotros</ion-button
-  >
+  <ion-button (click)="goToRegister()" expand="full" shape="round" fill="outline" color="success">Registrate con
+    nosotros</ion-button>
 </ion-content>

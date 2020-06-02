@@ -18,6 +18,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 //LOCAL STORAGE
 import { IonicStorageModule } from '@ionic/storage';
 
+//AUTENTICACIÓN FINGER-PRINT
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio/ngx';
+import { LoginPageModule } from './pages/login/login.module';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -28,9 +32,10 @@ import { IonicStorageModule } from '@ionic/storage';
     ComponentModule,
     IonicStorageModule.forRoot(),
     AngularFireModule.initializeApp(firebaseConfig), //INICIALIZAMOS LA BASE DE DATOS CON NUESTRA CONFIG
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    LoginPageModule
   ],
-  providers: [StatusBar, SplashScreen, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [StatusBar, SplashScreen,{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, FingerprintAIO],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

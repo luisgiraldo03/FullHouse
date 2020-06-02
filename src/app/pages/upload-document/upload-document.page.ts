@@ -16,6 +16,7 @@ export class UploadDocumentPage implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   newDocument: Document;
+  dateFormated = "";
   user: User;
   docType = ['Certificado', 'Extracto bancario', 'Documento', 'Identificacion'];
 
@@ -25,6 +26,17 @@ export class UploadDocumentPage implements OnInit {
     this.crud.SuscribeUser();
   }
 
+
+public dateNow(){
+    var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1;
+        var yyyy = today.getFullYear();
+        
+        this.dateFormated = dd+'/'+mm+'/'+yyyy;
+        console.log(this.dateFormated);
+}
+
   ngOnInit() {
     // EL FORM SE USARA PARA VALIDAR CON COLORES MIENTRAS EL USUARIO ESCRIBE
     this.documentForm = this.formBuilder.group({
@@ -32,6 +44,7 @@ export class UploadDocumentPage implements OnInit {
       entity: new FormControl('', Validators.compose([Validators.required])),
       _type: new FormControl('', Validators.compose([Validators.required]))
     });
+    this.dateNow();
   }
 
   // MENSAJES DE ERROR EN CASO DE QUE SE PONGA MAL LOS DATOS
@@ -47,7 +60,7 @@ export class UploadDocumentPage implements OnInit {
       id: this.user.documents != null ? this.user.documents.length + 1 : 1, //SI HAY DOCUMENTOS, QUE EL ID, EL ULTIMO +1, SI NO, SERA EL #1
       type: values._type,
       procededEntity: values.entity,
-      date: '20/12/2020',
+      date: this.dateFormated,
       user: this.user.name,
       name: values.name,
       certificated: false,
