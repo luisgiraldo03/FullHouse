@@ -45,6 +45,9 @@ export class OperatorsPage implements OnInit {
     },
     {
       name: 'MIN'
+    },
+    {
+      name: 'UNE'
     }
   ];
 

@@ -31,6 +31,9 @@ export class SendDocumentsPage implements OnInit {
     },
     {
       name: 'MIN'
+    },
+    {
+      name: 'UNE'
     }
   ];
 

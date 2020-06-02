@@ -24,7 +24,7 @@ export class RegisterPage implements OnInit {
     id: 0,
     name: 'Full House',
     company: 'Full House',
-    bondingDate: '25/05/2020'
+    bondingDate: this.dateNow()
   };
 
   //MENSAJES PARA AVISAR QUE HAY UN ERROR EN LA CREACION
@@ -64,7 +64,7 @@ export class RegisterPage implements OnInit {
         null,
         Validators.compose([Validators.required, Validators.minLength(2), Validators.pattern('[a-zA-Z ]*')])
       ),
-      password: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(4)]))
+      password: new FormControl(null, Validators.compose([Validators.required, Validators.minLength(6)]))
     });
   }
 
@@ -131,5 +131,15 @@ export class RegisterPage implements OnInit {
     this.user.requests = null;
     this.user.suscriptionType = 'normal';
     this.user.bondedOperator = this.fullHouseOperator;
+  }
+
+  dateNow() {
+    var dateFormated = '';
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    dateFormated = dd + '/' + mm + '/' + yyyy;
+    return dateFormated;
   }
 }

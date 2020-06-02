@@ -104,6 +104,14 @@ export class CrudService {
     }
   }
 
+  //NOS SUSCRIBIMOS A UN OPERADOR PARTE DEL USUARIO
+  // Suscribe(operator, target) {
+  //   var OperatorDB = this.fireStore.collection('Operadores').doc(target);
+  //   OperatorDB.update({
+  //     Premium: firebase.firestore.FieldValue.arrayUnion(id)
+  //   });
+  // }
+
   //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
 
   //TOMAMOS TODOS LOS OPERADORES QUE HAY

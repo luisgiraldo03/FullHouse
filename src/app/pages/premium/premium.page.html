@@ -8,6 +8,32 @@
 </ion-header>
 
 <ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-item>
+        <ion-label>Selecciona la entidad</ion-label>
+        <ion-select placeholder="¿Con que entidad te quieres volver premium?" (ionChange)="onChange($event)">
+          <ion-select-option [value]="en.name" *ngFor="let en of entities">{{en.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content *ngIf="selectedEntity.name != ''">
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-card-title class="titleSuscribeOperator">{{selectedEntity.name}}</ion-card-title>
+          </ion-row>
+          <ion-row>
+            <ion-button color="success" size="small" expand="block" class="btnSuscribeOperator">
+              <ion-icon name="checkmark-outline" (click)="Suscribe(selectedEntity.name)"></ion-icon>
+              Vincular
+            </ion-button>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
   <ion-card *ngFor="let operator of operators">
     <ion-card-header>
       <ion-card-subtitle>{{operator.company}}</ion-card-subtitle>
