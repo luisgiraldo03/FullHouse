@@ -20,6 +20,7 @@ export class SendDocumentsPage implements OnInit {
   successMessage: string = '';
   _operador: string; // AQUI GUARDAREMOS LA ENTIDAD DESTINO EN EL HTML
   sendDocForm: FormGroup;
+  operators: any = []; //ACA GUARAMOS LOS OPERADORES PREMIUM
 
   //ENTIDADES LAS CUALES ESTAN DISPONIBLES PARA ENVIAR DOCS
   public gubernamentalEntitis = [
@@ -46,6 +47,7 @@ export class SendDocumentsPage implements OnInit {
     this.user = User.GetInstance();
     this.crud.SuscribeUser();
     this.documents = this.user.documents;
+    this.TransformToObject(this.user.operators); //actualizamos los operadores de RAW string a objetos
   }
 
   //ACTIVAMOS EL FORM
@@ -112,10 +114,43 @@ export class SendDocumentsPage implements OnInit {
     //ENVIAMOS EL DOC
     if (this.destinationOperator != undefined) {
       this.documentsAdded.forEach((x) => (x.actualHolder = entity));
+      this.CheckPremium(entity);
       this.crud.SendDoc(this.documentsAdded, this.destinationOperator);
       this.navCtrl.navigateBack('/home');
     } else {
       this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }
+  }
+
+  //PARA CONVERTIR EL STRING QUE LLEGA DE OPERADORES DE
+  //FORMA {nombre-operador-fecha} A UN ARREGLO DE OBJETOS
+  TransformToObject(data) {
+    var count = 1;
+    var firstOccurrent, secondOcurrent, thirdOcurrent;
+    data.forEach((element) => {
+      firstOccurrent = element.indexOf('-');
+      secondOcurrent = element.indexOf('-', firstOccurrent + 1);
+      thirdOcurrent = element.indexOf('-', secondOcurrent + 1);
+      this.operators.push({
+        id: count,
+        name: element.substring(0, firstOccurrent),
+        company: element.substring(firstOccurrent + 1, secondOcurrent),
+        bondingDate: element.substring(secondOcurrent + 1)
+      });
+      count++;
+    });
+  }
+
+  //REVISAMOS SI OMOS PREMIUM, PARA QUITAR LA VARIABLE PREMIUM DE LOS DOCS SI NO ES EL CASO.
+  CheckPremium(entity) {
+    //todos en false
+    this.documentsAdded.forEach((x) => (x.premium = false));
+    //miramos si tenemos el operador en los premium
+    this.operators.forEach((x) => {
+      //a menos que encontremos que somos premium de la entidad destinjo
+      if (x.name.toLocaleUpperCase().split('').join('').includes(entity.toLocaleUpperCase().split('').join(''))) {
+        this.documentsAdded.forEach((x) => (x.premium = true));
+      }
+    });
   }
 }

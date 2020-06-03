@@ -204,7 +204,9 @@ export class OperatorsPage implements OnInit {
   //CHEQUEAMOS SI AL USUARIO AL QUE LE ENVIAREMOS EL DOC ES PREMIUM
   CheckPremium(email) {
     email = email.substring(0, email.indexOf('@'));
-    if (this.localPremiumArr['0']['Users'].includes(email)) return true; // es un objeto con 1 objeto aninado y 1 arreglo dentro de ese segundo objeto
+    if (this.localPremiumArr['0'] != undefined && this.localPremiumArr['0']['Users'] != undefined) {
+      if (this.localPremiumArr['0']['Users'].includes(email)) return true; // es un objeto con 1 objeto aninado y 1 arreglo dentro de ese segundo objeto
+    }
     return false;
   }
 }
