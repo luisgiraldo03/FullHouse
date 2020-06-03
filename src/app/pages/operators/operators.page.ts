@@ -97,7 +97,6 @@ export class OperatorsPage implements OnInit {
         Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')])
       ),
       requestType: new FormControl('', Validators.compose([Validators.required])),
-      entity: new FormControl('', Validators.compose([Validators.required])),
       docReq: new FormControl('', Validators.compose([Validators.required]))
     });
   }
@@ -189,13 +188,24 @@ export class OperatorsPage implements OnInit {
     this.requests = {
       id: 0,
       type: data.requestType,
-      origin: data.entity,
+      origin: this.targetEntity,
       documentRequest: data.docReq,
       date: '20/05/1996'
     };
     if (this.destinationOperator != undefined) {
-      this.crud.SendRequests(this.requests, this.destinationOperator, data.email);
-      this.navCtrl.navigateBack('/home');
+      console.log(this.localPremiumArr);
+      if (!this.CheckPremium(data.email)) {
+        this.crud.SendRequests(this.requests, this.destinationOperator, data.email);
+      } else {
+        this.crud.PremiumDocRequest(
+          this.requests,
+          this.destinationOperator,
+          data.email,
+          this.targetOperator,
+          this.targetEntity
+        );
+      }
+      //this.navCtrl.navigateBack('/home');
     } else {
       this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }

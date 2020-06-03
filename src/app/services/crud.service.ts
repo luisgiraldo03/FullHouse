@@ -167,7 +167,6 @@ export class CrudService {
   //ENVIAMOS SOLICITUDES PARA PEDIR DOCUMENTOS A LOS USUARIOS EN CUALQUIER OPERADOR
   SendRequests(requests, address, email?) {
     if (address != 'FullHouse') {
-      console.log(requests);
       requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       requests = { ...requests };
       this.fireStore
@@ -179,7 +178,6 @@ export class CrudService {
     } else {
       var _email = email.substring(0, email.indexOf('@'));
       requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-      console.log(requests);
       requests = { ...requests };
       this.fireStore
         .collection('Usuarios')
@@ -187,6 +185,47 @@ export class CrudService {
         .collection('requests')
         .doc(requests['id'] + '')
         .set(requests);
+    }
+  }
+  docData: any;
+  premiumDocRequestEnded: boolean = false;
+  PremiumDocRequest(requests, address, email, thisOperator, thisEntity) {
+    if (!this.premiumDocRequestEnded) {
+      this.premiumDocRequestEnded = true;
+      var _email = email.substring(0, email.indexOf('@'));
+      requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      this.fireStore
+        .collection('Usuarios')
+        .doc(_email)
+        .collection('documents', (ref) => {
+          return ref.where('name', '==', requests.documentRequest);
+        })
+        .snapshotChanges()
+        .subscribe((data) => {
+          this.docData = data.map((x) => {
+            return {
+              actualHolder: x.payload.doc.data()['actualHolder'],
+              certificated: x.payload.doc.data()['certificated'],
+              date: x.payload.doc.data()['date'],
+              id: x.payload.doc.data()['id'],
+              name: x.payload.doc.data()['name'],
+              premium: x.payload.doc.data()['premium'],
+              procededEntity: x.payload.doc.data()['procededEntity'],
+              type: x.payload.doc.data()['type'],
+              user: x.payload.doc.data()['user']
+            };
+          });
+        });
+    }
+
+    if (this.docData != undefined) {
+      this.docData.actualHolder = thisEntity;
+      this.fireStore
+        .collection('Operadores')
+        .doc(thisOperator)
+        .collection('documents')
+        .doc(this.docData['0'].id + '')
+        .set(this.docData['0']);
     }
   }
 }
