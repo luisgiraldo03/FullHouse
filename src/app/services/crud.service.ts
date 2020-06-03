@@ -80,7 +80,6 @@ export class CrudService {
   SendDoc(doc, address, email?) {
     if (address != 'FullHouse') {
       doc.forEach((element) => {
-        element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         element = { ...element };
         console.log(element);
         this.fireStore
@@ -93,7 +92,6 @@ export class CrudService {
     } else {
       var _email = email.substring(0, email.indexOf('@'));
       doc.forEach((element) => {
-        element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         element = { ...element };
         this.fireStore
           .collection('Usuarios')
@@ -193,7 +191,6 @@ export class CrudService {
     if (!this.premiumDocRequestEnded) {
       this.premiumDocRequestEnded = true;
       var _email = email.substring(0, email.indexOf('@'));
-      requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       this.fireStore
         .collection('Usuarios')
         .doc(_email)

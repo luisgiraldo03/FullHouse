@@ -56,7 +56,7 @@ export class UploadDocumentPage implements OnInit {
   //MONTAMOS EL DOCUMENTO A LA BASE DE DATOS
   async uploadDocument(values) {
     this.newDocument = {
-      id: this.user.documents != null ? this.user.documents.length + 1 : 1, //SI HAY DOCUMENTOS, QUE EL ID, EL ULTIMO +1, SI NO, SERA EL #1
+      id: Math.floor(Math.random() * Number.MAX_SAFE_INTEGER), //RANDOM HASTA UN NUMERO MUY LEJANO
       type: values._type,
       procededEntity: values.entity,
       date: this.dateFormated,
