@@ -63,7 +63,11 @@ export class SendDocumentsPage implements OnInit {
       name: doc.name,
       procededEntity: doc.procededEntity,
       type: doc.type,
-      user: doc.user
+      user: doc.user,
+      date: doc.date,
+      certificated: false,
+      actualHolder: doc.actualHolder,
+      premium: doc.premium
     });
 
     var el = this.documents.findIndex((_el) => _el.id === id);
@@ -80,7 +84,11 @@ export class SendDocumentsPage implements OnInit {
       name: doc.name,
       procededEntity: doc.procededEntity,
       type: doc.type,
-      user: doc.user
+      user: doc.user,
+      date: doc.date,
+      certificated: false,
+      actualHolder: doc.actualHolder,
+      premium: doc.premium
     });
 
     var el = this.documentsAdded.findIndex((_el) => _el.id === id);

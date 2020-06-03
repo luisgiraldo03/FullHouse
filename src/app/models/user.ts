@@ -52,7 +52,9 @@ export class User {
         date: e.payload.doc.data()['date'],
         user: e.payload.doc.data()['user'],
         name: e.payload.doc.data()['name'],
-        certificated: e.payload.doc.data()['certificated']
+        certificated: e.payload.doc.data()['certificated'],
+        actualHolder: e.payload.doc.data()['actualHolder'],
+        premium: e.payload.doc.data()['premium']
       };
     });
   }

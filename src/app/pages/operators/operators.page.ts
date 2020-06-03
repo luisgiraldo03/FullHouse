@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ɵConsole } from '@angular/core';
 import { Document } from '../../models/document';
 import { CrudService } from 'src/app/services/crud.service';
 import { MinTicService } from './../../services/min-tic.service';
@@ -21,17 +21,21 @@ export class OperatorsPage implements OnInit {
   searchOperator: string; // AQUI GUARDAREMOS LA ENTIDAD ACTUAL EN EL HTML
   sendDocForm: FormGroup;
   sendRequests: FormGroup;
+  localPremiumArr: any = []; // ARREGLO DE PREMIUMS
 
   //POSIBLES OPCIONES DE OPERADORES
   public operators = [
     {
-      name: 'GovCarpeta'
+      name: 'GovCarpeta/MinTic'
     },
     {
-      name: 'MinCarpeta'
+      name: 'MinCarpeta/MIN'
     },
     {
-      name: 'TicCarpeta'
+      name: 'TicCarpeta/EAFIT'
+    },
+    {
+      name: 'PQcarpeta/UNE'
     }
   ];
 
@@ -67,6 +71,9 @@ export class OperatorsPage implements OnInit {
     }
   ];
 
+  targetOperator: string;
+  targetEntity: string;
+
   constructor(
     private crud: CrudService,
     private minTic: MinTicService,
@@ -97,7 +104,9 @@ export class OperatorsPage implements OnInit {
 
   //ACTULIAZAMOS LOS DOCUMENTOS DEL OPERADOR CONFORME LOS CAMBIEMOS EN EL ION SELECT
   onChange($event) {
-    this.crud.GetOperatorDocs($event.target.value).subscribe((data) => {
+    this.targetOperator = $event.target.value.substring(0, $event.target.value.indexOf('/'));
+    this.targetEntity = $event.target.value.substring($event.target.value.indexOf('/') + 1);
+    this.crud.GetOperatorDocs(this.targetOperator, this.targetEntity).subscribe((data) => {
       this.documents = data.map((e) => {
         return {
           id: e.payload.doc.data()['id'],
@@ -111,9 +120,15 @@ export class OperatorsPage implements OnInit {
         };
       });
     });
+
+    //TRAEMOS SUS USUARIOS PREMIUM
+    var dataPremiumArr = this.crud.GetOperatorPremium(this.targetOperator, this.targetEntity);
+    dataPremiumArr.forEach((element) => {
+      this.localPremiumArr.push(element.payload.data());
+    });
   }
 
-  public addDocument(id: number) {
+  addDocument(id: number) {
     var doc = this.documents.find((el) => el.id === id);
     this.documentsAdded.push({
       id: id,
@@ -129,7 +144,6 @@ export class OperatorsPage implements OnInit {
     if (el > -1) {
       this.documents.splice(el, 1);
     }
-    console.log(this.documentsAdded);
   }
 
   public leaveDocument(id: number) {
@@ -150,6 +164,7 @@ export class OperatorsPage implements OnInit {
     }
   }
 
+  //LE ENVIAMOS 1 O MAS DOCUMENTOS AL USUARIO
   SendDocuments(data) {
     //SI HAY MENOS DE 1 DOCUMENTO NO SE PODRA ENVIAR
     if (this.documentsAdded.length < 1) {
@@ -159,6 +174,7 @@ export class OperatorsPage implements OnInit {
       this.destinationOperator = this.minTic.SearchOperator(data.email);
       if (this.destinationOperator != undefined) {
         this.documentsAdded.forEach((x) => (x.actualHolder = data.email));
+        if (this.CheckPremium(data.email)) this.documentsAdded.forEach((x) => (x.premium = true));
         this.crud.SendDoc(this.documentsAdded, this.destinationOperator, data.email);
         this.navCtrl.navigateBack('/home');
       } else {
@@ -167,6 +183,7 @@ export class OperatorsPage implements OnInit {
     }
   }
 
+  //LE HACEMOS UNA PETICION AL USUARIO PARA QUE NOS ENVIE UN DOCUMENTO
   SendRequests(data) {
     this.destinationOperator = this.minTic.SearchOperator(data.email);
     this.requests = {
@@ -182,5 +199,12 @@ export class OperatorsPage implements OnInit {
     } else {
       this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }
+  }
+
+  //CHEQUEAMOS SI AL USUARIO AL QUE LE ENVIAREMOS EL DOC ES PREMIUM
+  CheckPremium(email) {
+    email = email.substring(0, email.indexOf('@'));
+    if (this.localPremiumArr['0']['Users'].includes(email)) return true; // es un objeto con 1 objeto aninado y 1 arreglo dentro de ese segundo objeto
+    return false;
   }
 }

@@ -82,6 +82,7 @@ export class CrudService {
       doc.forEach((element) => {
         element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         element = { ...element };
+        console.log(element);
         this.fireStore
           .collection('Operadores')
           .doc(address)
@@ -105,12 +106,22 @@ export class CrudService {
   }
 
   //NOS SUSCRIBIMOS A UN OPERADOR PARTE DEL USUARIO
-  // Suscribe(operator, target) {
-  //   var OperatorDB = this.fireStore.collection('Operadores').doc(target);
-  //   OperatorDB.update({
-  //     Premium: firebase.firestore.FieldValue.arrayUnion(id)
-  //   });
-  // }
+  Suscribe(operator, targetEntity, userID, data) {
+    //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
+    var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
+
+    OperatorDB.update({
+      Users: firebase.firestore.FieldValue.arrayUnion(userID)
+    });
+
+    //NOS INSCRIBIMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
+    this.fireStore
+      .collection(this.collectionName)
+      .doc(userID)
+      .update({
+        operators: firebase.firestore.FieldValue.arrayUnion(data)
+      });
+  }
 
   //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
 
@@ -120,10 +131,22 @@ export class CrudService {
   }
 
   //NOS SUSCRIBIMOS A UNOS DOCUMENTOS DADO UNA ENTIDAD
-  GetOperatorDocs(operator) {
-    return this.fireStore.collection('Operadores').doc(operator).collection('documents').snapshotChanges();
+  GetOperatorDocs(operator, entity) {
+    return this.fireStore
+      .collection('Operadores')
+      .doc(operator)
+      .collection('documents', (ref) => {
+        return ref.where('actualHolder', '==', entity);
+      })
+      .snapshotChanges();
   }
 
+  //NOS SUSCRIBIMOS A UNOS USUARIOS PREMIUM
+  GetOperatorPremium(operator, entity) {
+    return this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(entity).snapshotChanges();
+  }
+
+  //ENVIAMOS SOLICITUDES PARA PEDIR DOCUMENTOS A LOS USUARIOS EN CUALQUIER OPERADOR
   SendRequests(requests, address, email?) {
     if (address != 'FullHouse') {
       console.log(requests);
