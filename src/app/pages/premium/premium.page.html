@@ -24,9 +24,15 @@
             <ion-card-title class="titleSuscribeOperator">{{selectedEntity.name}}</ion-card-title>
           </ion-row>
           <ion-row>
-            <ion-button color="success" size="small" expand="block" class="btnSuscribeOperator">
-              <ion-icon name="checkmark-outline" (click)="Suscribe(selectedEntity.name)"></ion-icon>
-              Vincular
+            <ion-button
+              size="small"
+              expand="block"
+              class="btnSuscribeOperator"
+              (click)="Suscribe(selectedEntity.name)"
+              [color]="isAlreadySuscribedColor"
+            >
+              <ion-icon [name]="isAlreadySuscribedIcon"></ion-icon>
+              {{isAlreadySuscribed}}
             </ion-button>
           </ion-row>
         </ion-grid>
@@ -43,7 +49,7 @@
     <ion-card-content>
       <span>Fecha de vinculación: {{operator.bondingDate}}</span>
     </ion-card-content>
-    <ion-button color="danger" size="small" expand="block"
+    <ion-button color="danger" size="small" expand="block" (click)="UnSuscribe(operator.name)"
       ><ion-icon slot="icon-only" name="close-outline"></ion-icon>Desvincular</ion-button
     >
   </ion-card>

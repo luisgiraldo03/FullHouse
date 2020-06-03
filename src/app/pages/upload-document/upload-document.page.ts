@@ -16,7 +16,7 @@ export class UploadDocumentPage implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   newDocument: Document;
-  dateFormated = "";
+  dateFormated = '';
   user: User;
   docType = ['Certificado', 'Extracto bancario', 'Documento', 'Identificacion'];
 
@@ -26,16 +26,15 @@ export class UploadDocumentPage implements OnInit {
     this.crud.SuscribeUser();
   }
 
-
-public dateNow(){
+  public dateNow() {
     var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1;
-        var yyyy = today.getFullYear();
-        
-        this.dateFormated = dd+'/'+mm+'/'+yyyy;
-        console.log(this.dateFormated);
-}
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+
+    this.dateFormated = dd + '/' + mm + '/' + yyyy;
+    console.log(this.dateFormated);
+  }
 
   ngOnInit() {
     // EL FORM SE USARA PARA VALIDAR CON COLORES MIENTRAS EL USUARIO ESCRIBE
@@ -64,7 +63,8 @@ public dateNow(){
       user: this.user.name,
       name: values.name,
       certificated: false,
-      actualHolder: 'Full House'
+      actualHolder: 'Full House',
+      premium: false
     };
     this.newDocument = { ...this.newDocument };
     this.successMessage = 'Cargando documento...';

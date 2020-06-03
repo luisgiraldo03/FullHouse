@@ -7,4 +7,5 @@ export interface Document {
   name?: string;
   certificated?: boolean;
   actualHolder?: string;
+  premium?: boolean;
 }

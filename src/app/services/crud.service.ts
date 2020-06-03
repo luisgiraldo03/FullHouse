@@ -82,6 +82,7 @@ export class CrudService {
       doc.forEach((element) => {
         element.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
         element = { ...element };
+        console.log(element);
         this.fireStore
           .collection('Operadores')
           .doc(address)
@@ -104,13 +105,41 @@ export class CrudService {
     }
   }
 
-  //NOS SUSCRIBIMOS A UN OPERADOR PARTE DEL USUARIO
-  // Suscribe(operator, target) {
-  //   var OperatorDB = this.fireStore.collection('Operadores').doc(target);
-  //   OperatorDB.update({
-  //     Premium: firebase.firestore.FieldValue.arrayUnion(id)
-  //   });
-  // }
+  //NOS SUSCRIBIMOS A UN OPERADOR
+  Suscribe(operator, targetEntity, userID, data) {
+    //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
+    var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
+
+    OperatorDB.update({
+      Users: firebase.firestore.FieldValue.arrayUnion(userID)
+    });
+
+    //NOS INSCRIBIMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
+    this.fireStore
+      .collection(this.collectionName)
+      .doc(userID)
+      .update({
+        operators: firebase.firestore.FieldValue.arrayUnion(data)
+      });
+  }
+
+  //BORRAMOS LA SUSCRIPCION A UN OPERADOR
+  UnSuscribe(operator, targetEntity, userID, data) {
+    //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
+    var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
+
+    OperatorDB.update({
+      Users: firebase.firestore.FieldValue.arrayRemove(userID)
+    });
+
+    //NOS INSCRIBIMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
+    this.fireStore
+      .collection(this.collectionName)
+      .doc(userID)
+      .update({
+        operators: firebase.firestore.FieldValue.arrayRemove(data)
+      });
+  }
 
   //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
 
@@ -120,13 +149,24 @@ export class CrudService {
   }
 
   //NOS SUSCRIBIMOS A UNOS DOCUMENTOS DADO UNA ENTIDAD
-  GetOperatorDocs(operator) {
-    return this.fireStore.collection('Operadores').doc(operator).collection('documents').snapshotChanges();
+  GetOperatorDocs(operator, entity) {
+    return this.fireStore
+      .collection('Operadores')
+      .doc(operator)
+      .collection('documents', (ref) => {
+        return ref.where('actualHolder', '==', entity);
+      })
+      .snapshotChanges();
   }
 
+  //NOS SUSCRIBIMOS A UNOS USUARIOS PREMIUM
+  GetOperatorPremium(operator, entity) {
+    return this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(entity).snapshotChanges();
+  }
+
+  //ENVIAMOS SOLICITUDES PARA PEDIR DOCUMENTOS A LOS USUARIOS EN CUALQUIER OPERADOR
   SendRequests(requests, address, email?) {
     if (address != 'FullHouse') {
-      console.log(requests);
       requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
       requests = { ...requests };
       this.fireStore
@@ -138,7 +178,6 @@ export class CrudService {
     } else {
       var _email = email.substring(0, email.indexOf('@'));
       requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-      console.log(requests);
       requests = { ...requests };
       this.fireStore
         .collection('Usuarios')
@@ -146,6 +185,47 @@ export class CrudService {
         .collection('requests')
         .doc(requests['id'] + '')
         .set(requests);
+    }
+  }
+  docData: any;
+  premiumDocRequestEnded: boolean = false;
+  PremiumDocRequest(requests, address, email, thisOperator, thisEntity) {
+    if (!this.premiumDocRequestEnded) {
+      this.premiumDocRequestEnded = true;
+      var _email = email.substring(0, email.indexOf('@'));
+      requests.id = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+      this.fireStore
+        .collection('Usuarios')
+        .doc(_email)
+        .collection('documents', (ref) => {
+          return ref.where('name', '==', requests.documentRequest);
+        })
+        .snapshotChanges()
+        .subscribe((data) => {
+          this.docData = data.map((x) => {
+            return {
+              actualHolder: x.payload.doc.data()['actualHolder'],
+              certificated: x.payload.doc.data()['certificated'],
+              date: x.payload.doc.data()['date'],
+              id: x.payload.doc.data()['id'],
+              name: x.payload.doc.data()['name'],
+              premium: x.payload.doc.data()['premium'],
+              procededEntity: x.payload.doc.data()['procededEntity'],
+              type: x.payload.doc.data()['type'],
+              user: x.payload.doc.data()['user']
+            };
+          });
+        });
+    }
+
+    if (this.docData != undefined) {
+      this.docData.actualHolder = thisEntity;
+      this.fireStore
+        .collection('Operadores')
+        .doc(thisOperator)
+        .collection('documents')
+        .doc(this.docData['0'].id + '')
+        .set(this.docData['0']);
     }
   }
 }
