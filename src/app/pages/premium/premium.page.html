@@ -49,7 +49,7 @@
     <ion-card-content>
       <span>Fecha de vinculación: {{operator.bondingDate}}</span>
     </ion-card-content>
-    <ion-button color="danger" size="small" expand="block"
+    <ion-button color="danger" size="small" expand="block" (click)="UnSuscribe(operator.name)"
       ><ion-icon slot="icon-only" name="close-outline"></ion-icon>Desvincular</ion-button
     >
   </ion-card>

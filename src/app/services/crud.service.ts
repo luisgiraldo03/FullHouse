@@ -105,7 +105,7 @@ export class CrudService {
     }
   }
 
-  //NOS SUSCRIBIMOS A UN OPERADOR PARTE DEL USUARIO
+  //NOS SUSCRIBIMOS A UN OPERADOR
   Suscribe(operator, targetEntity, userID, data) {
     //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
     var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
@@ -120,6 +120,24 @@ export class CrudService {
       .doc(userID)
       .update({
         operators: firebase.firestore.FieldValue.arrayUnion(data)
+      });
+  }
+
+  //BORRAMOS LA SUSCRIPCION A UN OPERADOR
+  UnSuscribe(operator, targetEntity, userID, data) {
+    //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
+    var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
+
+    OperatorDB.update({
+      Users: firebase.firestore.FieldValue.arrayRemove(userID)
+    });
+
+    //NOS INSCRIBIMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
+    this.fireStore
+      .collection(this.collectionName)
+      .doc(userID)
+      .update({
+        operators: firebase.firestore.FieldValue.arrayRemove(data)
       });
   }
 

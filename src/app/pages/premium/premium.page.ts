@@ -67,6 +67,14 @@ export class PremiumPage implements OnInit {
     }
   }
 
+  //BORRAMOS LA SUSCRIPCION DE UN OPERADOR
+  UnSuscribe(targetEntity) {
+    var targetOperator = this.minTic.SearchOperator(targetEntity);
+    var operatorObjectToDb = targetEntity + '-' + targetOperator + '-' + this.dateNow();
+    this.crud.UnSuscribe(targetOperator, targetEntity, this.user.cedula, operatorObjectToDb);
+    this.navCtrl.navigateBack('/home');
+  }
+
   //PARA SACAR LA FECHA EN UN STRING
   dateNow() {
     var dateFormated = '';
