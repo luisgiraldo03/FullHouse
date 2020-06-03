@@ -12,23 +12,6 @@ import { NavController } from '@ionic/angular';
 })
 export class RequestsPage implements OnInit {
   requests: Request[];
-  // public requests: Request[] = [
-  //   {
-  //     id: 1,
-  //     origin: 'MinTic',
-  //     type: 'Solicitud de documento',
-  //     documentRequest: 'Cédula de ciudadanía',
-  //     date: '20/12/2020'
-  //   },
-  //   {
-  //     id: 2,
-  //     origin: 'Universidad EAFIT',
-  //     type: 'Solicitud de documento',
-  //     documentRequest: 'Certificado de estudio',
-  //     date: '20/12/2020'
-  //   }
-  // ];
-
   user: User;
   destinationOperator: string;
 
@@ -39,8 +22,8 @@ export class RequestsPage implements OnInit {
     this.requests = this.user.requests;
   }
 
+  //ENVIAMOS EL DOCUMENTO CORRESPONDIENTE AL OPERADOR Y BORRAMOS EL REQUEST
   Accept(request) {
-    console.log(request.documentRequest);
     var docs = this.user.documents;
     var docToSend = [];
     this.destinationOperator = this.minTic.SearchOperator(request.origin);
@@ -54,8 +37,17 @@ export class RequestsPage implements OnInit {
         }
       }
     });
-    console.log(docToSend);
-    if (docToSend.length >= 1) this.SendDocument(request.origin, docToSend);
+    if (docToSend.length >= 1) {
+      this.SendDocument(request.origin, docToSend);
+      this.crud.RejectRequest(request, this.user.email);
+      this.navCtrl.navigateBack('/home');
+    }
+  }
+
+  //BORRAMOS LA REQUEST QUE NO QUEREMOS
+  Reject(request) {
+    this.crud.RejectRequest(request, this.user.email);
+    this.navCtrl.navigateBack('/home');
   }
 
   //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC

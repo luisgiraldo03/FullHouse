@@ -115,7 +115,8 @@ export class OperatorsPage implements OnInit {
           user: e.payload.doc.data()['user'],
           name: e.payload.doc.data()['name'],
           certificated: e.payload.doc.data()['certificated'],
-          actualHolder: e.payload.doc.data()['actualHolder']
+          actualHolder: e.payload.doc.data()['actualHolder'],
+          premium: e.payload.doc.data()['premium']
         };
       });
     });
@@ -136,7 +137,9 @@ export class OperatorsPage implements OnInit {
       type: doc.type,
       user: doc.user,
       date: doc.date,
-      certificated: true
+      certificated: true,
+      actualHolder: doc.actualHolder,
+      premium: doc.premium
     });
 
     var el = this.documents.findIndex((_el) => _el.id === id);
@@ -154,7 +157,9 @@ export class OperatorsPage implements OnInit {
       type: doc.type,
       user: doc.user,
       date: doc.date,
-      certificated: true
+      certificated: true,
+      actualHolder: doc.actualHolder,
+      premium: doc.premium
     });
 
     var el = this.documentsAdded.findIndex((_el) => _el.id === id);
@@ -193,7 +198,6 @@ export class OperatorsPage implements OnInit {
       date: '20/05/1996'
     };
     if (this.destinationOperator != undefined) {
-      console.log(this.localPremiumArr);
       if (!this.CheckPremium(data.email)) {
         this.crud.SendRequests(this.requests, this.destinationOperator, data.email);
       } else {
@@ -205,7 +209,7 @@ export class OperatorsPage implements OnInit {
           this.targetEntity
         );
       }
-      //this.navCtrl.navigateBack('/home');
+      this.navCtrl.navigateBack('/home');
     } else {
       this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
     }

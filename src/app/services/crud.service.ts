@@ -123,20 +123,30 @@ export class CrudService {
 
   //BORRAMOS LA SUSCRIPCION A UN OPERADOR
   UnSuscribe(operator, targetEntity, userID, data) {
-    //LE ENVIAMOS LOS DATOS DEL USUARIO AL OPERADOR
+    //NOS BORRAMOS LOS DATOS DEL USUARIO EN EL OPERADOR
     var OperatorDB = this.fireStore.collection('Operadores').doc(operator).collection('Premium').doc(targetEntity);
 
     OperatorDB.update({
       Users: firebase.firestore.FieldValue.arrayRemove(userID)
     });
 
-    //NOS INSCRIBIMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
+    //NOS BORRAMOS EN EL OPERADOR EN LA DB DE FULLHOUSE
     this.fireStore
       .collection(this.collectionName)
       .doc(userID)
       .update({
         operators: firebase.firestore.FieldValue.arrayRemove(data)
       });
+  }
+
+  RejectRequest(request, email) {
+    var _email = email.substring(0, email.indexOf('@'));
+    this.fireStore
+      .collection('Usuarios')
+      .doc(_email)
+      .collection('requests')
+      .doc(request.id + '')
+      .delete();
   }
 
   //------------------------CRUD DE LOS AGENTES EXTERNOS ( MIN TIC Y OTROS OPERADORES )--------------------------
@@ -185,12 +195,17 @@ export class CrudService {
         .set(requests);
     }
   }
+
+  //TOMAMOS DOCUMENTOS DE UN USUARIO QUE ES PREMIUM, NO LE HACEMOS REQUEST DE NADA
+  //SOLO ENTRAMOS Y LO TOMAMOS
   docData: any;
   premiumDocRequestEnded: boolean = false;
   PremiumDocRequest(requests, address, email, thisOperator, thisEntity) {
     if (!this.premiumDocRequestEnded) {
       this.premiumDocRequestEnded = true;
       var _email = email.substring(0, email.indexOf('@'));
+
+      //tomamos el documento, suscribiendonos a el, y luego esperando a que cambie el valor, ( dando click de nuevo :) )
       this.fireStore
         .collection('Usuarios')
         .doc(_email)
@@ -215,6 +230,7 @@ export class CrudService {
         });
     }
 
+    // cuando cambie el valor, lo enviamos a el operador
     if (this.docData != undefined) {
       this.docData.actualHolder = thisEntity;
       this.fireStore
