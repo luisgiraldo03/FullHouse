@@ -5,6 +5,7 @@ import { User } from '../../models/user';
 import { MinTicService } from './../../services/min-tic.service';
 import { NavController } from '@ionic/angular';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { DocManagerService } from 'src/app/services/doc-manager.service';
 
 @Component({
   selector: 'app-send-documents',
@@ -42,7 +43,8 @@ export class SendDocumentsPage implements OnInit {
     private crud: CrudService,
     private minTic: MinTicService,
     private navCtrl: NavController,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private SendManager: DocManagerService
   ) {
     this.user = User.GetInstance();
     this.crud.SuscribeUser();
@@ -61,7 +63,7 @@ export class SendDocumentsPage implements OnInit {
   public addDocument(id: number) {
     var doc = this.documents.find((el) => el.id === id);
     this.documentsAdded.push({
-      id: id,
+      id: doc.id,
       name: doc.name,
       procededEntity: doc.procededEntity,
       type: doc.type,
@@ -82,7 +84,7 @@ export class SendDocumentsPage implements OnInit {
   public leaveDocument(id: number) {
     var doc = this.documentsAdded.find((el) => el.id === id);
     this.documents.push({
-      id: id,
+      id: doc.id,
       name: doc.name,
       procededEntity: doc.procededEntity,
       type: doc.type,
@@ -99,26 +101,16 @@ export class SendDocumentsPage implements OnInit {
     }
   }
 
-  //BUSCAMOS EL OPERADOR DE LA ENTIDAD A LA QUE ENVIAREMOS EL DOCUMENTO
-  //EL SERVICIO DE MIN TIC SE ENCARGARA DE ESTO
-  public FindOperatorName(entity) {
-    this.destinationOperator = this.minTic.SearchOperator(entity);
-  }
-
-  //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC
+  //ENVIAMOS UN DOCUMENTO Al GESTOR DE ENVIOS
   public SendDocument(data) {
     var entity = data.entity;
-    //HALLAMOS EL NOMBRE DEL OPERADOR
-    this.FindOperatorName(entity);
-
-    //ENVIAMOS EL DOC
-    if (this.destinationOperator != undefined) {
-      this.documentsAdded.forEach((x) => (x.actualHolder = entity));
-      this.CheckPremium(entity);
-      this.crud.SendDoc(this.documentsAdded, this.destinationOperator);
+    this.documentsAdded.forEach((x) => (x.actualHolder = entity));
+    this.CheckPremium(entity); // si es premiuim, modificamos la variable premium en cada doc
+    // lo enviamos
+    if (this.SendManager.SendDocument(entity, this.documentsAdded)) {
       this.navCtrl.navigateBack('/home');
     } else {
-      this.successMessage = '...Confirmando direccion, clickea de nuevo para enviar';
+      console.log('problemas en sendDocsManager');
     }
   }
 
