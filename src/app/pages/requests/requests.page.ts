@@ -4,6 +4,7 @@ import { CrudService } from 'src/app/services/crud.service';
 import { User } from 'src/app/models/user';
 import { MinTicService } from 'src/app/services/min-tic.service';
 import { NavController } from '@ionic/angular';
+import { DocManagerService } from 'src/app/services/doc-manager.service';
 
 @Component({
   selector: 'app-requests',
@@ -15,7 +16,12 @@ export class RequestsPage implements OnInit {
   user: User;
   destinationOperator: string;
 
-  constructor(private crud: CrudService, private minTic: MinTicService, private navCtrl: NavController) {
+  constructor(
+    private crud: CrudService,
+    private minTic: MinTicService,
+    private navCtrl: NavController,
+    private docSendManager: DocManagerService
+  ) {
     //CREAMOS EL SINGLETON Y LE PONEMOS UN OBSERVABLE PARA QUE SE ACTUALIZE CON LA DB SIEMPRE
     this.user = User.GetInstance();
     this.crud.SuscribeUser();
@@ -38,9 +44,13 @@ export class RequestsPage implements OnInit {
       }
     });
     if (docToSend.length >= 1) {
-      this.SendDocument(request.origin, docToSend);
-      this.crud.RejectRequest(request, this.user.email);
-      this.navCtrl.navigateBack('/home');
+      docToSend.forEach((x) => (x.actualHolder = request.origin));
+      if (this.docSendManager.SendDocument(request.origin, docToSend)) {
+        this.crud.RejectRequest(request, this.user.email);
+        this.navCtrl.navigateBack('/home');
+      } else {
+        console.log('problemas en docManagerSender');
+      }
     }
   }
 
@@ -48,22 +58,6 @@ export class RequestsPage implements OnInit {
   Reject(request) {
     this.crud.RejectRequest(request, this.user.email);
     this.navCtrl.navigateBack('/home');
-  }
-
-  //ENVIAMOS UN DOCUMENTO A LA DIRECCION QUE NOS DEVOLVIO EL MIN TIC
-  public SendDocument(entity, doc) {
-    //HALLAMOS EL NOMBRE DEL OPERADOR EL SERVICIO DE MIN TIC SE ENCARGARA DE ESTO
-    this.destinationOperator = this.minTic.SearchOperator(entity);
-    console.log(this.destinationOperator);
-    //ENVIAMOS EL DOC
-    if (this.destinationOperator != undefined) {
-      doc.actualHolder = entity;
-      console.log('sending..');
-      this.crud.SendDoc(doc, this.destinationOperator);
-      //ACA TOCA BORRAR EL REQUEST, NO LO HAREMOS HASTA NO IMPLEMENTAR EL ENVIO DE REQUEST
-    } else {
-      console.log('...Confirmando direccion, clickea de nuevo para enviar');
-    }
   }
 
   ngOnInit() {}
